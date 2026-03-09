@@ -1287,7 +1287,9 @@ create or replace package pkg_tour as
       p_capacitypax in tour.capacitypax%type,
       p_startdate   in tour.startdate%type,
       p_enddate     in tour.enddate%type,
-      p_status      in tour.status%type
+      p_status      in tour.status%type,
+      p_countryid   IN tour.countryid%TYPE          
+
    );
 
    procedure sp_tour_upd (
@@ -1298,7 +1300,8 @@ create or replace package pkg_tour as
       p_capacitypax in tour.capacitypax%type,
       p_startdate   in tour.startdate%type,
       p_enddate     in tour.enddate%type,
-      p_status      in tour.status%type
+      p_status      in tour.status%type,
+      p_countryid   IN tour.countryid%TYPE          
    );
 
 end pkg_tour;
@@ -1312,7 +1315,8 @@ create or replace package body pkg_tour as
       p_capacitypax in tour.capacitypax%type,
       p_startdate   in tour.startdate%type,
       p_enddate     in tour.enddate%type,
-      p_status      in tour.status%type
+      p_status      in tour.status%type,
+      p_countryid   IN tour.countryid%TYPE         
    ) is
       v_dummy number;
    begin
@@ -1362,6 +1366,11 @@ create or replace package body pkg_tour as
           where tourtypeid = p_tourtypeid;
       end if;
 
+       -- เช็ค FK CountryID เฉพาะตอนที่ใส่ค่ามา
+      IF p_countryid IS NOT NULL THEN
+         SELECT 1 INTO v_dummy FROM country WHERE countryid = p_countryid;
+      END IF;
+
       insert into tour (
          tourid,
          tourcode,
@@ -1370,7 +1379,8 @@ create or replace package body pkg_tour as
          capacitypax,
          startdate,
          enddate,
-         status
+         status,
+         countryid                                  
       ) values ( p_tourid,
                  p_tourcode,
                  p_tourtypeid,
@@ -1378,7 +1388,8 @@ create or replace package body pkg_tour as
                  p_capacitypax,
                  p_startdate,
                  p_enddate,
-                 p_status );
+                 p_status,
+                 p_countryid );
 
    exception
       when dup_val_on_index then
@@ -1401,7 +1412,8 @@ create or replace package body pkg_tour as
       p_capacitypax in tour.capacitypax%type,
       p_startdate   in tour.startdate%type,
       p_enddate     in tour.enddate%type,
-      p_status      in tour.status%type
+      p_status      in tour.status%type,
+      p_countryid   IN tour.countryid%TYPE   
    ) is
       v_dummy number;
    begin
@@ -1451,6 +1463,11 @@ create or replace package body pkg_tour as
           where tourtypeid = p_tourtypeid;
       end if;
 
+      -- เช็ค FK CountryID เฉพาะตอนที่ใส่ค่ามา
+      IF p_countryid IS NOT NULL THEN
+         SELECT 1 INTO v_dummy FROM country WHERE countryid = p_countryid;
+      END IF;
+
       update tour
          set tourcode = p_tourcode,
              tourtypeid = p_tourtypeid,
@@ -1458,7 +1475,8 @@ create or replace package body pkg_tour as
              capacitypax = p_capacitypax,
              startdate = p_startdate,
              enddate = p_enddate,
-             status = p_status
+             status = p_status,
+             countryid   = p_countryid  
        where tourid = p_tourid;
 
       if sql%rowcount = 0 then

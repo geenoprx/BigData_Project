@@ -143,31 +143,34 @@ begin
 end load_DimBooking;
 
 
-create or replace PROCEDURE load_Customer as
+create or replace PROCEDURE load_DimCustomer as
 begin 
     UPDATE DimCustomer d
     SET d.IsCurrent = 'N',
     d.EffectiveTo = CURRENT_TIMESTAMP
     WHERE d.IsCurrent = 'Y' AND EXISTS (SELECT 1 FROM STG_Customer c
     LEFT JOIN STG_CustomerType ct ON ct.CustTypeID = c.CustTypeID
-    WHERE c.CustomerID = d.CustomerID AND 
-    NVL(d.Name, '~') <> NVL(c.Name, '~') OR
-    NVL(d.Nationality, '~') <> NVL(c.Nationality, '~') OR
-    NVL(d.CustTypeID, '~') <> NVL(ct.CustTypeID, '~') OR
-    NVL(d.CustTypeName, '~') <> NVL(ct.Name, '~') OR
-    NVL(d.DiscountRate, -1) <> NVL(ct.DiscountRate, -1)
+    WHERE c.CustomerID = d.CustomerID 
+    AND (                                   
+              NVL(d.Name,        '~') <> NVL(c.Name,         '~')
+           OR NVL(d.Nationality, '~') <> NVL(c.Nationality,  '~')
+           OR NVL(d.CustTypeID,  '~') <> NVL(ct.CustTypeID,  '~')
+           OR NVL(d.CustTypeName,'~') <> NVL(ct.Name,        '~')
+           OR NVL(d.DiscountRate, -1) <> NVL(ct.DiscountRate, -1)
+        )                                      
     );
 
     INSERT INTO DimCustomer(CustomerID, Name, Nationality, CusttypeID, CustTypeName, DiscountRate,EffectiveFrom, EffectiveTo, IsCurrent)
     SELECT c.CustomerID, c.Name, c.Nationality, c.CustTypeID, ct.Name, ct.DiscountRate, CURRENT_TIMESTAMP, NULL, 'Y'
     FROM STG_Customer c LEFT JOIN STG_CustomerType ct ON ct.CustTypeID = c.CustTypeID
     LEFT JOIN DimCustomer d ON d.CustomerID = c.CustomerID AND IsCurrent = 'Y' WHERE d.CustomerID IS NULL
-    OR
-    (NVL(d.Name, '~') <> NVL(c.Name, '~') OR
-    NVL(d.Nationality, '~') <> NVL(c.Nationality, '~') OR
-    NVL(d.CustTypeID, '~') <> NVL(c.CustTypeID, '~') OR
-    NVL(d.CustTypeName, '~') <> NVL(ct.Name, '~') OR
-    NVL(d.DiscountRate, -1) <> NVL(ct.DiscountRate, -1));
+    OR (                                           
+        NVL(d.Name,        '~') <> NVL(c.Name,         '~')
+     OR NVL(d.Nationality, '~') <> NVL(c.Nationality,  '~')
+     OR NVL(d.CustTypeID,  '~') <> NVL(c.CustTypeID,   '~')
+     OR NVL(d.CustTypeName,'~') <> NVL(ct.Name,        '~')
+     OR NVL(d.DiscountRate, -1) <> NVL(ct.DiscountRate, -1)
+    ); 
 end load_customer;
 
 
@@ -184,7 +187,7 @@ begin
             AND (
                 NVL(d.Name,'~') <> NVL(s.Name,'~')
             OR NVL(d.MinPax,-1)         <> NVL(s.MinPax,-1)
-            OR NVL(d.DiscountPercentage,-1)  <> NVL(s.DiscountValue,-1)
+            OR NVL(d.DiscountValue,-1)  <> NVL(s.DiscountValue,-1)
             OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(s.StartDate,'YYYY-MM-DD'),'~')
             OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(s.EndDate,'YYYY-MM-DD'),'~')
             OR NVL(d.Status,'~')   <> NVL(s.Status,'~')
@@ -192,7 +195,7 @@ begin
     );
 
     INSERT INTO DimPromotion (
-    PromotionID, Name, MinPax, DiscountPercentage, StartDate, EndDate, Status,
+    PromotionID, Name, MinPax, DiscountValue, StartDate, EndDate, Status,
     EffectiveFrom, EffectiveTo, IsCurrent
     )
     SELECT
@@ -212,7 +215,7 @@ begin
     OR (
             NVL(d.Name,'~') <> NVL(s.Name,'~')
         OR NVL(d.MinPax,-1)         <> NVL(s.MinPax,-1)
-        OR NVL(d.DiscountPercentage,-1)  <> NVL(s.DiscountValue,-1)
+        OR NVL(d.DiscountValue ,-1)  <> NVL(s.DiscountValue,-1)
         OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(s.StartDate,'YYYY-MM-DD'),'~')
         OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(s.EndDate,'YYYY-MM-DD'),'~')
         OR NVL(d.Status,'~')   <> NVL(s.Status,'~')
@@ -230,33 +233,31 @@ BEGIN
         SELECT 1
         FROM STG_Tour t
         LEFT JOIN STG_TourType tt ON tt.TourTypeID = t.TourTypeID
-        LEFT JOIN STG_Country  c  ON c.CountryID  = t.CountryID
+        LEFT JOIN STG_Country  c  ON c.CountryID   = t.CountryID  
         WHERE t.TourID = d.TourID
             AND (
-                NVL(d.TourCode,'~')     <> NVL(t.TourCode,'~')
-            OR NVL(d.Name,'~')     <> NVL(t.Name,'~')
-            OR NVL(d.CapacityPax,-1)   <> NVL(t.CapacityPax,-1)
-            OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(t.StartDate,'YYYY-MM-DD'),'~')
-            OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(t.EndDate,'YYYY-MM-DD'),'~')
-            OR NVL(d.TourStatus,'~')   <> NVL(t.Status,'~')
-
-            OR NVL(d.TourTypeID,'~')   <> NVL(t.TourTypeID,'~')
-            OR NVL(d.TourTypeName,'~') <> NVL(tt.Name,'~')
-            OR NVL(d.TourTypeDesc,'~') <> NVL(tt.Description,'~')
-            OR NVL(d.BasePrice,-1)     <> NVL(tt.BasePrice,-1)
-            OR NVL(d.DurationDays,-1)  <> NVL(tt.DurationDays,-1)
-            OR NVL(d.ActiveFlag,'~')   <> NVL(tt.ActiveFlag,'~')
-
-            OR NVL(d.DestinationCountryID,'~')   <> NVL(t.CountryID,'~')
-            OR NVL(d.DestinationCountryName,'~') <> NVL(c.Name,'~')
-            )
+              NVL(d.TourCode,   '~') <> NVL(t.TourCode,   '~')
+           OR NVL(d.Name,       '~') <> NVL(t.Name,       '~')
+           OR NVL(d.CapacityPax, -1) <> NVL(t.CapacityPax, -1)
+           OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(t.StartDate,'YYYY-MM-DD'),'~')
+           OR NVL(TO_CHAR(d.EndDate,  'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(t.EndDate,  'YYYY-MM-DD'),'~')
+           OR NVL(d.TourStatus, '~') <> NVL(t.Status,     '~')
+           OR NVL(d.TourTypeID, '~') <> NVL(t.TourTypeID, '~')
+           OR NVL(d.TourTypeName,'~')<> NVL(tt.Name,      '~')
+           OR NVL(d.TourTypeDesc,'~')<> NVL(tt.Description,'~')
+           OR NVL(d.BasePrice,   -1) <> NVL(tt.BasePrice,  -1)
+           OR NVL(d.DurationDays,-1) <> NVL(tt.DurationDays,-1)
+           OR NVL(d.ActiveFlag, '~') <> NVL(tt.ActiveFlag, '~')
+           OR NVL(d.DestinationCountryID,  '~') <> NVL(t.CountryID, '~')  -- ✅
+           OR NVL(d.DestinationCountryName,'~') <> NVL(c.Name,      '~')  -- ✅
+          )
     );
 
     INSERT INTO DimTour (
-    TourID, TourCode, Name, CapacityPax, StartDate, EndDate, TourStatus,
-    TourTypeID, TourTypeName, TourTypeDesc, BasePrice, DurationDays, ActiveFlag,
-    DestinationCountryID, DestinationCountryName,
-    EffectiveFrom, EffectiveTo, IsCurrent
+        TourID, TourCode, Name, CapacityPax, StartDate, EndDate, TourStatus,
+        TourTypeID, TourTypeName, TourTypeDesc, BasePrice, DurationDays, ActiveFlag,
+        DestinationCountryID, DestinationCountryName,
+        EffectiveFrom, EffectiveTo, IsCurrent
     )
     SELECT
     t.TourID,

@@ -146,12 +146,14 @@ CREATE TABLE
         StartDate DATE,
         EndDate DATE,
         Status VARCHAR2 (10),
+        CountryID VARCHAR2(8),
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         createdBy VARCHAR2 (128) DEFAULT USER NOT NULL,
         updatedAt TIMESTAMP,
         updatedBy VARCHAR2 (128),
         CONSTRAINT UQ_Tour_TourCode UNIQUE (TourCode),
-        CONSTRAINT FK_Tour_TourType FOREIGN KEY (TourTypeID) REFERENCES TourType (TourTypeID)
+        CONSTRAINT FK_Tour_TourType FOREIGN KEY (TourTypeID) REFERENCES TourType (TourTypeID),
+        CONSTRAINT FK_Tour_Country FOREIGN KEY (CountryID) REFERENCES Country(CountryID)
     );
 
 --Tour Detail

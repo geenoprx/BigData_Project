@@ -24,18 +24,18 @@ INSERT INTO TourType (TourTypeID, Name, Description, BasePrice, DurationDays, Ac
 INSERT INTO TourType (TourTypeID, Name, Description, BasePrice, DurationDays, ActiveFlag) VALUES ('TTINT02', 'Intl Medium', 'International Medium Haul Tour 7-8 Days', 39900, 7, 'Y');
 
 --Tour
-INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status) 
-VALUES ('T0001', 'JP-6D-TKS-01', 'TTINT01', 'JP Tokyo-Osaka', 30, DATE '2026-03-25', DATE '2026-03-30', 'OPEN');
-INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status) 
-VALUES ('T0002', 'JP-6D-TKS-02', 'TTINT01', 'JP Tokyo-Osaka', 30, DATE '2026-04-10', DATE '2026-04-15', 'OPEN');
-INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status) 
-VALUES ('T0003', 'TH-3D-CNX-01', 'TTDOM01', 'CNX Highlight', 25, DATE '2026-02-20', DATE '2026-02-22', 'CLOSED');
-INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status) 
-VALUES ('T0004', 'SG-4D-FE-01', 'TTFNE01', 'SG FreeEzy', 20, DATE '2026-05-01', DATE '2026-05-04', 'OPEN');
-INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status) 
-VALUES ('T0005', 'KR-5D-SJ-01', 'TTINT01', 'KR Seoul-Jeju', 32, DATE '2026-06-10', DATE '2026-06-14', 'OPEN');
-INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status) 
-VALUES ('T0006', 'INC-3D-TH-01', 'TTINC01', 'Incentive TH', 40, DATE '2026-07-05', DATE '2026-07-07', 'DRAFT');
+INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
+VALUES ('T0001', 'JP-6D-TKS-01', 'TTINT01', 'JP Tokyo-Osaka', 30, DATE '2026-03-25', DATE '2026-03-30', 'OPEN', 'CTY002');
+INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
+VALUES ('T0002', 'JP-6D-TKS-02', 'TTINT01', 'JP Tokyo-Osaka', 30, DATE '2026-04-10', DATE '2026-04-15', 'OPEN', 'CTY002');
+INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
+VALUES ('T0003', 'TH-3D-CNX-01', 'TTDOM01', 'CNX Highlight', 25, DATE '2026-02-20', DATE '2026-02-22', 'CLOSED', 'CTY001');
+INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
+VALUES ('T0004', 'SG-4D-FE-01', 'TTFNE01', 'SG FreeEzy', 20, DATE '2026-05-01', DATE '2026-05-04', 'OPEN', 'CTY004');
+INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
+VALUES ('T0005', 'KR-5D-SJ-01', 'TTINT01', 'KR Seoul-Jeju', 32, DATE '2026-06-10', DATE '2026-06-14', 'OPEN', 'CTY003');
+INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
+VALUES ('T0006', 'INC-3D-TH-01', 'TTINC01', 'Incentive TH', 40, DATE '2026-07-05', DATE '2026-07-07', 'DRAFT', 'CTY001');
 
 --Promotion
 INSERT INTO Promotion (PromotionID, Name, MinPax, DiscountValue, StartDate, EndDate, Status) VALUES ('PRM0001', 'Early Bird 60 Days', 2, 0, DATE '2026-01-01', DATE '2026-03-31', 'ACTIVE');
