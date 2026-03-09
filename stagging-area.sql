@@ -1,0 +1,38 @@
+CREATE TABLE STG_Booking       AS SELECT * FROM Booking       WHERE 1=0;
+CREATE TABLE STG_BookingDetail AS SELECT * FROM BookingDetail WHERE 1=0;
+CREATE TABLE STG_Customer      AS SELECT * FROM Customer      WHERE 1=0;
+CREATE TABLE STG_CustomerType  AS SELECT * FROM CustomerType  WHERE 1=0;
+CREATE TABLE STG_Tour          AS SELECT * FROM Tour          WHERE 1=0;
+CREATE TABLE STG_TourType      AS SELECT * FROM TourType      WHERE 1=0;
+CREATE TABLE STG_Promotion     AS SELECT * FROM Promotion     WHERE 1=0;
+CREATE TABLE STG_PromotionDetail AS SELECT * FROM PromotionDetail WHERE 1=0;
+CREATE TABLE STG_Department      AS SELECT * FROM Department WHERE 1=0;
+CREATE TABLE STG_Employee       AS SELECT * FROM Employee       WHERE 1=0;
+CREATE TABLE STG_CostType       AS SELECT * FROM CostType       WHERE 1=0;
+CREATE TABLE STG_ItemCost       AS SELECT * FROM ItemCost       WHERE 1=0;
+CREATE TABLE STG_CostDetail     AS SELECT * FROM CostDetail     WHERE 1=0;
+CREATE TABLE STG_TourPlan       AS SELECT * FROM TourPlan       WHERE 1=0;
+CREATE TABLE STG_Region         AS SELECT * FROM Region         WHERE 1=0;
+CREATE TABLE STG_Country        AS SELECT * FROM Country        WHERE 1=0;
+CREATE TABLE STG_Guide          AS SELECT * FROM Guide          WHERE 1=0;
+CREATE TABLE STG_TourDetail     AS SELECT * FROM TourDetail     WHERE 1=0;
+
+
+ALTER TABLE STG_Booking          ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_BookingDetail    ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Customer         ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_CustomerType     ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Tour             ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_TourType         ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Promotion        ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_PromotionDetail  ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Department       ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Employee         ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_CostType         ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_ItemCost         ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_CostDetail       ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_TourPlan         ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Region           ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Country          ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_Guide            ADD (ETL_LoadedAt TIMESTAMP);
+ALTER TABLE STG_TourDetail       ADD (ETL_LoadedAt TIMESTAMP);
