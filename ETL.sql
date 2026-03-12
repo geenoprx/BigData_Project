@@ -1,92 +1,238 @@
 --Load data from OLTP to Staging Areas
-TRUNCATE TABLE STG_Booking;
-INSERT INTO STG_Booking 
-SELECT t.*, CURRENT_TIMESTAMP 
+DELETE FROM STG_Booking;
+INSERT INTO STG_Booking (
+    BookingID, CustomerID, PromotionID, EmpNo,
+    BookingDate, BookingStatus, PaymentStatus, PaymentMethod,
+    TotalPax, TotalAmount,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.BookingID, t.CustomerID, t.PromotionID, t.EmpNo,
+    t.BookingDate, t.BookingStatus, t.PaymentStatus, t.PaymentMethod,
+    t.TotalPax, t.TotalAmount,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Booking t;
 
-TRUNCATE TABLE STG_BookingDetail;
-INSERT INTO STG_BookingDetail 
-SELECT t.*, CURRENT_TIMESTAMP 
-FROM BookingDetail t; 
+DELETE FROM STG_BookingDetail;
+INSERT INTO STG_BookingDetail (
+    BookingID, SeqNo, TourID,
+    ServDateFrom, ServDateTo,
+    PaxAdult, PaxChild, UnitPrice, SubTotalAmount,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.BookingID, t.SeqNo, t.TourID,
+    t.ServDateFrom, t.ServDateTo,
+    t.PaxAdult, t.PaxChild, t.UnitPrice, t.SubTotalAmount,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
+FROM BookingDetail t;
 
-TRUNCATE TABLE STG_Customer;
-INSERT INTO STG_Customer
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Customer;
+INSERT INTO STG_Customer (
+    CustomerID, CustTypeID, Name, Phone, Address,
+    PassportNo, Nationality, DOB,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.CustomerID, t.CustTypeID, t.Name, t.Phone, t.Address,
+    t.PassportNo, t.Nationality, t.DOB,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Customer t;
 
-TRUNCATE TABLE STG_CustomerType;
-INSERT INTO STG_CustomerType
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_CustomerType;
+INSERT INTO STG_CustomerType (
+    CustTypeID, Name, DiscountRate,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.CustTypeID, t.Name, t.DiscountRate,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM CustomerType t;
 
-TRUNCATE TABLE STG_Tour;
-INSERT INTO STG_Tour
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Tour;
+INSERT INTO STG_Tour (
+    TourID, TourCode, TourTypeID, Name, CapacityPax,
+    StartDate, EndDate, Status, CountryID,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.TourID, t.TourCode, t.TourTypeID, t.Name, t.CapacityPax,
+    t.StartDate, t.EndDate, t.Status, t.CountryID,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Tour t;
 
-TRUNCATE TABLE STG_TourType;
-INSERT INTO STG_TourType
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_TourType;
+INSERT INTO STG_TourType (
+    TourTypeID, Name, Description, BasePrice, DurationDays, ActiveFlag,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.TourTypeID, t.Name, t.Description, t.BasePrice, t.DurationDays, t.ActiveFlag,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM TourType t;
 
-TRUNCATE TABLE STG_Promotion;
-INSERT INTO STG_Promotion
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Promotion;
+INSERT INTO STG_Promotion (
+    PromotionID, Name, MinPax, DiscountValue, StartDate, EndDate, Status,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.PromotionID, t.Name, t.MinPax, t.DiscountValue, t.StartDate, t.EndDate, t.Status,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Promotion t;
 
-TRUNCATE TABLE STG_PromotionDetail;
-INSERT INTO STG_PromotionDetail
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_PromotionDetail;
+INSERT INTO STG_PromotionDetail (
+    PromotionID, SeqNo, TourID, DiscountPercent,
+    StartDate, EndDate, ExtraCondition, MinBookAmount,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.PromotionID, t.SeqNo, t.TourID, t.DiscountPercent,
+    t.StartDate, t.EndDate, t.ExtraCondition, t.MinBookAmount,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM PromotionDetail t;
 
-TRUNCATE TABLE STG_Department;
-INSERT INTO STG_Department
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Department;
+INSERT INTO STG_Department (
+    DeptCode, DeptName, TotalEmp,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.DeptCode, t.DeptName, t.TotalEmp,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Department t;
 
-TRUNCATE TABLE STG_Employee;
-INSERT INTO STG_Employee
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Employee;
+INSERT INTO STG_Employee (
+    EmpNo, FName, LName, Position, StartDate, ResignDate, DeptCode, Status,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.EmpNo, t.FName, t.LName, t.Position, t.StartDate, t.ResignDate, t.DeptCode, t.Status,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Employee t;
 
-TRUNCATE TABLE STG_CostType;
-INSERT INTO STG_CostType
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_CostType;
+INSERT INTO STG_CostType (
+    CostTypeID, Name, Description,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.CostTypeID, t.Name, t.Description,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM CostType t;
 
-TRUNCATE TABLE STG_ItemCost;
-INSERT INTO STG_ItemCost
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_ItemCost;
+INSERT INTO STG_ItemCost (
+    ItemCostID, Name, Email, RatePerUnit, Status,
+    createdAt, createdBy, updatedAt, updatedBy,
+    CountryID, CostTypeID,
+    ETL_LoadedAt
+)
+SELECT
+    t.ItemCostID, t.Name, t.Email, t.RatePerUnit, t.Status,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    t.CountryID, t.CostTypeID,
+    CURRENT_TIMESTAMP
 FROM ItemCost t;
 
-TRUNCATE TABLE STG_CostDetail;
-INSERT INTO STG_CostDetail
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_CostDetail;
+INSERT INTO STG_CostDetail (
+    TourID, SeqNo, GuideID, ItemCostID,
+    FeeAmount, Quantity, Note, StartDate, EndDate,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.TourID, t.SeqNo, t.GuideID, t.ItemCostID,
+    t.FeeAmount, t.Quantity, t.Note, t.StartDate, t.EndDate,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM CostDetail t;
 
-TRUNCATE TABLE STG_TourPlan;
-INSERT INTO STG_TourPlan
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_TourPlan;
+INSERT INTO STG_TourPlan (
+    TourPlanID, Name, Description,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.TourPlanID, t.Name, t.Description,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM TourPlan t;
 
-TRUNCATE TABLE STG_Region;
-INSERT INTO STG_Region
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Region;
+INSERT INTO STG_Region (
+    RegionID, Name, Description,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.RegionID, t.Name, t.Description,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Region t;
 
-TRUNCATE TABLE STG_Country;
-INSERT INTO STG_Country
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Country;
+INSERT INTO STG_Country (
+    CountryID, Name, Description, RegionID,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.CountryID, t.Name, t.Description, t.RegionID,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Country t;
 
-TRUNCATE TABLE STG_Guide;
-INSERT INTO STG_Guide
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_Guide;
+INSERT INTO STG_Guide (
+    GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.GuideID, t.Name, t.Email, t.LanguageSkills, t.Phone, t.Specialty, t.Salary, t.Status,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM Guide t;
 
-TRUNCATE TABLE STG_TourDetail;
-INSERT INTO STG_TourDetail
-SELECT t.*, CURRENT_TIMESTAMP
+DELETE FROM STG_TourDetail;
+INSERT INTO STG_TourDetail (
+    TourID, DayNo, TourPlanID, Title, Description,
+    Meal, HotelName, TransportNote,
+    createdAt, createdBy, updatedAt, updatedBy,
+    ETL_LoadedAt
+)
+SELECT
+    t.TourID, t.DayNo, t.TourPlanID, t.Title, t.Description,
+    t.Meal, t.HotelName, t.TransportNote,
+    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+    CURRENT_TIMESTAMP
 FROM TourDetail t;
 COMMIT;
 
@@ -119,10 +265,11 @@ Begin
 end load_dimDate;
 
 create or replace PROCEDURE load_DimBooking as
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
 begin 
     UPDATE DimBooking d
     SET d.IsCurrent = 'N',
-        d.EffectiveTo = CURRENT_TIMESTAMP
+        d.EffectiveTo = v_now
     WHERE d.IsCurrent = 'Y' AND EXISTS (
     SELECT 1 FROM STG_Booking s 
     WHERE s.BookingID = d.BookingID AND (
@@ -133,21 +280,27 @@ begin
     );
 
     INSERT INTO DimBooking (BookingID, BookingStatus, PaymentStatus, PaymentMethod, EffectiveFrom, EffectiveTo, IsCurrent)
-    SELECT s.BookingID, s.BookingStatus, s.PaymentStatus, s.PaymentMethod, CURRENT_TIMESTAMP, NULL, 'Y'
+    SELECT s.BookingID, s.BookingStatus, s.PaymentStatus, s.PaymentMethod, v_now, NULL, 'Y'
     FROM STG_Booking s LEFT JOIN DimBooking d ON d.BookingID = s.BookingID
     AND d.IsCurrent = 'Y'
     WHERE d.BookingID IS NULL OR (
         NVL(d.BookingStatus, '~') <> NVL(s.BookingStatus, '~')
         OR NVL(d.PaymentStatus, '~') <> NVL(s.PaymentStatus, '~')
         OR NVL(d.PaymentMethod, '~') <> NVL(s.PaymentMethod, '~'));
+
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
 end load_DimBooking;
 
 
 create or replace PROCEDURE load_DimCustomer as
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
 begin 
     UPDATE DimCustomer d
     SET d.IsCurrent = 'N',
-    d.EffectiveTo = CURRENT_TIMESTAMP
+    d.EffectiveTo = v_now
     WHERE d.IsCurrent = 'Y' AND EXISTS (SELECT 1 FROM STG_Customer c
     LEFT JOIN STG_CustomerType ct ON ct.CustTypeID = c.CustTypeID
     WHERE c.CustomerID = d.CustomerID 
@@ -161,7 +314,7 @@ begin
     );
 
     INSERT INTO DimCustomer(CustomerID, Name, Nationality, CusttypeID, CustTypeName, DiscountRate,EffectiveFrom, EffectiveTo, IsCurrent)
-    SELECT c.CustomerID, c.Name, c.Nationality, c.CustTypeID, ct.Name, ct.DiscountRate, CURRENT_TIMESTAMP, NULL, 'Y'
+    SELECT c.CustomerID, c.Name, c.Nationality, c.CustTypeID, ct.Name, ct.DiscountRate, v_now, NULL, 'Y'
     FROM STG_Customer c LEFT JOIN STG_CustomerType ct ON ct.CustTypeID = c.CustTypeID
     LEFT JOIN DimCustomer d ON d.CustomerID = c.CustomerID AND IsCurrent = 'Y' WHERE d.CustomerID IS NULL
     OR (                                           
@@ -170,15 +323,20 @@ begin
      OR NVL(d.CustTypeID,  '~') <> NVL(c.CustTypeID,   '~')
      OR NVL(d.CustTypeName,'~') <> NVL(ct.Name,        '~')
      OR NVL(d.DiscountRate, -1) <> NVL(ct.DiscountRate, -1)
-    ); 
-end load_customer;
+    );
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+end load_DimCustomer;
 
 
 create or replace PROCEDURE load_DimPromotion as
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
 begin 
     UPDATE DimPromotion d
    SET d.IsCurrent   = 'N',
-       d.EffectiveTo = CURRENT_TIMESTAMP
+       d.EffectiveTo = v_now
     WHERE d.IsCurrent = 'Y'
     AND EXISTS (
         SELECT 1
@@ -206,7 +364,7 @@ begin
     s.StartDate,
     s.EndDate,
     s.Status,
-    CURRENT_TIMESTAMP, NULL, 'Y'
+    v_now, NULL, 'Y'
     FROM STG_Promotion s
     LEFT JOIN DimPromotion d
     ON d.PromotionID = s.PromotionID
@@ -220,14 +378,19 @@ begin
         OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(s.EndDate,'YYYY-MM-DD'),'~')
         OR NVL(d.Status,'~')   <> NVL(s.Status,'~')
     );
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
 end load_DimPromotion;
 
 
 create or replace procedure load_DimTour AS
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
 BEGIN
     UPDATE DimTour d
     SET d.IsCurrent   = 'N',
-        d.EffectiveTo = CURRENT_TIMESTAMP
+        d.EffectiveTo = v_now
     WHERE d.IsCurrent = 'Y'
     AND EXISTS (
         SELECT 1
@@ -248,8 +411,8 @@ BEGIN
            OR NVL(d.BasePrice,   -1) <> NVL(tt.BasePrice,  -1)
            OR NVL(d.DurationDays,-1) <> NVL(tt.DurationDays,-1)
            OR NVL(d.ActiveFlag, '~') <> NVL(tt.ActiveFlag, '~')
-           OR NVL(d.DestinationCountryID,  '~') <> NVL(t.CountryID, '~')  -- ✅
-           OR NVL(d.DestinationCountryName,'~') <> NVL(c.Name,      '~')  -- ✅
+           OR NVL(d.DestinationCountryID,  '~') <> NVL(t.CountryID, '~') 
+           OR NVL(d.DestinationCountryName,'~') <> NVL(c.Name,      '~')
           )
     );
 
@@ -278,7 +441,7 @@ BEGIN
     t.CountryID,
     c.Name,
 
-    CURRENT_TIMESTAMP, NULL, 'Y'
+    v_now, NULL, 'Y'
     FROM STG_Tour t
     LEFT JOIN STG_TourType tt ON tt.TourTypeID = t.TourTypeID
     LEFT JOIN STG_Country  c  ON c.CountryID  = t.CountryID
@@ -304,14 +467,19 @@ BEGIN
         OR NVL(d.DestinationCountryID,'~')   <> NVL(t.CountryID,'~')
         OR NVL(d.DestinationCountryName,'~') <> NVL(c.Name,'~')
     );
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
 END load_DimTour;
 
 
 create or replace procedure load_DimItemCost AS
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
 BEGIN
     UPDATE DimItemCost d
     SET d.IsCurrent   = 'N',
-        d.EffectiveTo = CURRENT_TIMESTAMP
+        d.EffectiveTo = v_now
     WHERE d.IsCurrent = 'Y'
     AND EXISTS (
         SELECT 1
@@ -346,7 +514,7 @@ BEGIN
     ct.Name,
     ic.CountryID,
     c.Name,
-    CURRENT_TIMESTAMP, NULL, 'Y'
+    v_now, NULL, 'Y'
     FROM STG_ItemCost ic
     LEFT JOIN STG_CostType ct ON ct.CostTypeID = ic.CostTypeID
     LEFT JOIN STG_Country  c  ON c.CountryID  = ic.CountryID
@@ -363,13 +531,18 @@ BEGIN
         OR NVL(d.CountryID,'~')    <> NVL(ic.CountryID,'~')
         OR NVL(d.CountryName,'~')  <> NVL(c.Name,'~')
     );
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
 END load_DimItemCost;
 
 create or replace procedure load_DimGuide as
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
 begin 
     UPDATE DimGuide d
     SET d.IsCurrent   = 'N',
-        d.EffectiveTo = CURRENT_TIMESTAMP
+        d.EffectiveTo = v_now
     WHERE d.IsCurrent = 'Y'
     AND EXISTS (
         SELECT 1
@@ -395,7 +568,7 @@ begin
     s.Specialty,
     s.Status,
     s.Salary,
-    CURRENT_TIMESTAMP,
+    v_now,
     NULL,
     'Y'
     FROM STG_Guide s
@@ -410,7 +583,10 @@ begin
         OR NVL(d.GuideStatus,'~')        <> NVL(s.Status,'~')
         OR NVL(d.GuideSalary,-1)         <> NVL(s.Salary,-1)
     );
-
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
 end load_dimGuide;
 
 create or replace procedure load_DimCountry as
