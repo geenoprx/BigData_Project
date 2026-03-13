@@ -1,240 +1,272 @@
 --Load data from OLTP to Staging Areas
-DELETE FROM STG_Booking;
-INSERT INTO STG_Booking (
-    BookingID, CustomerID, PromotionID, EmpNo,
-    BookingDate, BookingStatus, PaymentStatus, PaymentMethod,
-    TotalPax, TotalAmount,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.BookingID, t.CustomerID, t.PromotionID, t.EmpNo,
-    t.BookingDate, t.BookingStatus, t.PaymentStatus, t.PaymentMethod,
-    t.TotalPax, t.TotalAmount,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Booking t;
+CREATE OR REPLACE PROCEDURE load_Staging AS
+    v_now TIMESTAMP := CURRENT_TIMESTAMP;
+BEGIN
+    -- STG_Booking
+    DELETE FROM STG_Booking;
+    INSERT INTO STG_Booking (
+        BookingID, CustomerID, PromotionID, EmpNo,
+        BookingDate, BookingStatus, PaymentStatus, PaymentMethod,
+        TotalPax, TotalAmount,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.BookingID, t.CustomerID, t.PromotionID, t.EmpNo,
+        t.BookingDate, t.BookingStatus, t.PaymentStatus, t.PaymentMethod,
+        t.TotalPax, t.TotalAmount,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Booking t;
 
-DELETE FROM STG_BookingDetail;
-INSERT INTO STG_BookingDetail (
-    BookingID, SeqNo, TourID,
-    ServDateFrom, ServDateTo,
-    PaxAdult, PaxChild, UnitPrice, SubTotalAmount,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.BookingID, t.SeqNo, t.TourID,
-    t.ServDateFrom, t.ServDateTo,
-    t.PaxAdult, t.PaxChild, t.UnitPrice, t.SubTotalAmount,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM BookingDetail t;
+    -- STG_BookingDetail
+    DELETE FROM STG_BookingDetail;
+    INSERT INTO STG_BookingDetail (
+        BookingID, SeqNo, TourID,
+        ServDateFrom, ServDateTo,
+        PaxAdult, PaxChild, UnitPrice, SubTotalAmount,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.BookingID, t.SeqNo, t.TourID,
+        t.ServDateFrom, t.ServDateTo,
+        t.PaxAdult, t.PaxChild, t.UnitPrice, t.SubTotalAmount,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM BookingDetail t;
 
-DELETE FROM STG_Customer;
-INSERT INTO STG_Customer (
-    CustomerID, CustTypeID, Name, Phone, Address,
-    PassportNo, Nationality, DOB,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.CustomerID, t.CustTypeID, t.Name, t.Phone, t.Address,
-    t.PassportNo, t.Nationality, t.DOB,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Customer t;
+    -- STG_Customer
+    DELETE FROM STG_Customer;
+    INSERT INTO STG_Customer (
+        CustomerID, CustTypeID, Name, Phone, Address,
+        PassportNo, Nationality, DOB,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.CustomerID, t.CustTypeID, t.Name, t.Phone, t.Address,
+        t.PassportNo, t.Nationality, t.DOB,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Customer t;
 
-DELETE FROM STG_CustomerType;
-INSERT INTO STG_CustomerType (
-    CustTypeID, Name, DiscountRate,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.CustTypeID, t.Name, t.DiscountRate,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM CustomerType t;
+    -- STG_CustomerType
+    DELETE FROM STG_CustomerType;
+    INSERT INTO STG_CustomerType (
+        CustTypeID, Name, DiscountRate,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.CustTypeID, t.Name, t.DiscountRate,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM CustomerType t;
 
-DELETE FROM STG_Tour;
-INSERT INTO STG_Tour (
-    TourID, TourCode, TourTypeID, Name, CapacityPax,
-    StartDate, EndDate, Status, CountryID,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.TourID, t.TourCode, t.TourTypeID, t.Name, t.CapacityPax,
-    t.StartDate, t.EndDate, t.Status, t.CountryID,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Tour t;
+    -- STG_Tour
+    DELETE FROM STG_Tour;
+    INSERT INTO STG_Tour (
+        TourID, TourCode, TourTypeID, Name, CapacityPax,
+        StartDate, EndDate, Status, CountryID,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.TourID, t.TourCode, t.TourTypeID, t.Name, t.CapacityPax,
+        t.StartDate, t.EndDate, t.Status, t.CountryID,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Tour t;
 
-DELETE FROM STG_TourType;
-INSERT INTO STG_TourType (
-    TourTypeID, Name, Description, BasePrice, DurationDays, ActiveFlag,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.TourTypeID, t.Name, t.Description, t.BasePrice, t.DurationDays, t.ActiveFlag,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM TourType t;
+    -- STG_TourType
+    DELETE FROM STG_TourType;
+    INSERT INTO STG_TourType (
+        TourTypeID, Name, Description, BasePrice, DurationDays, ActiveFlag,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.TourTypeID, t.Name, t.Description, t.BasePrice, t.DurationDays, t.ActiveFlag,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM TourType t;
 
-DELETE FROM STG_Promotion;
-INSERT INTO STG_Promotion (
-    PromotionID, Name, MinPax, DiscountValue, StartDate, EndDate, Status,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.PromotionID, t.Name, t.MinPax, t.DiscountValue, t.StartDate, t.EndDate, t.Status,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Promotion t;
+    -- STG_Promotion
+    DELETE FROM STG_Promotion;
+    INSERT INTO STG_Promotion (
+        PromotionID, Name, MinPax, DiscountValue, StartDate, EndDate, Status,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.PromotionID, t.Name, t.MinPax, t.DiscountValue, t.StartDate, t.EndDate, t.Status,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Promotion t;
 
-DELETE FROM STG_PromotionDetail;
-INSERT INTO STG_PromotionDetail (
-    PromotionID, SeqNo, TourID, DiscountPercent,
-    StartDate, EndDate, ExtraCondition, MinBookAmount,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.PromotionID, t.SeqNo, t.TourID, t.DiscountPercent,
-    t.StartDate, t.EndDate, t.ExtraCondition, t.MinBookAmount,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM PromotionDetail t;
+    -- STG_PromotionDetail
+    DELETE FROM STG_PromotionDetail;
+    INSERT INTO STG_PromotionDetail (
+        PromotionID, SeqNo, TourID, DiscountPercent,
+        StartDate, EndDate, ExtraCondition, MinBookAmount,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.PromotionID, t.SeqNo, t.TourID, t.DiscountPercent,
+        t.StartDate, t.EndDate, t.ExtraCondition, t.MinBookAmount,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM PromotionDetail t;
 
-DELETE FROM STG_Department;
-INSERT INTO STG_Department (
-    DeptCode, DeptName, TotalEmp,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.DeptCode, t.DeptName, t.TotalEmp,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Department t;
+    -- STG_Department
+    DELETE FROM STG_Department;
+    INSERT INTO STG_Department (
+        DeptCode, DeptName, TotalEmp,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.DeptCode, t.DeptName, t.TotalEmp,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Department t;
 
-DELETE FROM STG_Employee;
-INSERT INTO STG_Employee (
-    EmpNo, FName, LName, Position, StartDate, ResignDate, DeptCode, Status,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.EmpNo, t.FName, t.LName, t.Position, t.StartDate, t.ResignDate, t.DeptCode, t.Status,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Employee t;
+    -- STG_Employee
+    DELETE FROM STG_Employee;
+    INSERT INTO STG_Employee (
+        EmpNo, FName, LName, Position, StartDate, ResignDate, DeptCode, Status,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.EmpNo, t.FName, t.LName, t.Position, t.StartDate, t.ResignDate, t.DeptCode, t.Status,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Employee t;
 
-DELETE FROM STG_CostType;
-INSERT INTO STG_CostType (
-    CostTypeID, Name, Description,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.CostTypeID, t.Name, t.Description,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM CostType t;
+    -- STG_CostType
+    DELETE FROM STG_CostType;
+    INSERT INTO STG_CostType (
+        CostTypeID, Name, Description,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.CostTypeID, t.Name, t.Description,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM CostType t;
 
-DELETE FROM STG_ItemCost;
-INSERT INTO STG_ItemCost (
-    ItemCostID, Name, Email, RatePerUnit, Status,
-    createdAt, createdBy, updatedAt, updatedBy,
-    CountryID, CostTypeID,
-    ETL_LoadedAt
-)
-SELECT
-    t.ItemCostID, t.Name, t.Email, t.RatePerUnit, t.Status,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    t.CountryID, t.CostTypeID,
-    CURRENT_TIMESTAMP
-FROM ItemCost t;
+    -- STG_ItemCost
+    DELETE FROM STG_ItemCost;
+    INSERT INTO STG_ItemCost (
+        ItemCostID, Name, Email, RatePerUnit, Status,
+        createdAt, createdBy, updatedAt, updatedBy,
+        CountryID, CostTypeID,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.ItemCostID, t.Name, t.Email, t.RatePerUnit, t.Status,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        t.CountryID, t.CostTypeID,
+        v_now
+    FROM ItemCost t;
 
-DELETE FROM STG_CostDetail;
-INSERT INTO STG_CostDetail (
-    TourID, SeqNo, GuideID, ItemCostID,
-    FeeAmount, Quantity, Note, StartDate, EndDate,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.TourID, t.SeqNo, t.GuideID, t.ItemCostID,
-    t.FeeAmount, t.Quantity, t.Note, t.StartDate, t.EndDate,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM CostDetail t;
+    -- STG_CostDetail
+    DELETE FROM STG_CostDetail;
+    INSERT INTO STG_CostDetail (
+        TourID, SeqNo, GuideID, ItemCostID,
+        FeeAmount, Quantity, Note, StartDate, EndDate,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.TourID, t.SeqNo, t.GuideID, t.ItemCostID,
+        t.FeeAmount, t.Quantity, t.Note, t.StartDate, t.EndDate,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM CostDetail t;
 
-DELETE FROM STG_TourPlan;
-INSERT INTO STG_TourPlan (
-    TourPlanID, Name, Description,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.TourPlanID, t.Name, t.Description,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM TourPlan t;
+    -- STG_TourPlan
+    DELETE FROM STG_TourPlan;
+    INSERT INTO STG_TourPlan (
+        TourPlanID, Name, Description,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.TourPlanID, t.Name, t.Description,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM TourPlan t;
 
-DELETE FROM STG_Region;
-INSERT INTO STG_Region (
-    RegionID, Name, Description,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.RegionID, t.Name, t.Description,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Region t;
+    -- STG_Region
+    DELETE FROM STG_Region;
+    INSERT INTO STG_Region (
+        RegionID, Name, Description,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.RegionID, t.Name, t.Description,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Region t;
 
-DELETE FROM STG_Country;
-INSERT INTO STG_Country (
-    CountryID, Name, Description, RegionID,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.CountryID, t.Name, t.Description, t.RegionID,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Country t;
+    -- STG_Country
+    DELETE FROM STG_Country;
+    INSERT INTO STG_Country (
+        CountryID, Name, Description, RegionID,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.CountryID, t.Name, t.Description, t.RegionID,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Country t;
 
-DELETE FROM STG_Guide;
-INSERT INTO STG_Guide (
-    GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.GuideID, t.Name, t.Email, t.LanguageSkills, t.Phone, t.Specialty, t.Salary, t.Status,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM Guide t;
+    -- STG_Guide
+    DELETE FROM STG_Guide;
+    INSERT INTO STG_Guide (
+        GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.GuideID, t.Name, t.Email, t.LanguageSkills, t.Phone, t.Specialty, t.Salary, t.Status,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM Guide t;
 
-DELETE FROM STG_TourDetail;
-INSERT INTO STG_TourDetail (
-    TourID, DayNo, TourPlanID, Title, Description,
-    Meal, HotelName, TransportNote,
-    createdAt, createdBy, updatedAt, updatedBy,
-    ETL_LoadedAt
-)
-SELECT
-    t.TourID, t.DayNo, t.TourPlanID, t.Title, t.Description,
-    t.Meal, t.HotelName, t.TransportNote,
-    t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
-    CURRENT_TIMESTAMP
-FROM TourDetail t;
-COMMIT;
+    -- STG_TourDetail
+    DELETE FROM STG_TourDetail;
+    INSERT INTO STG_TourDetail (
+        TourID, DayNo, TourPlanID, Title, Description,
+        Meal, HotelName, TransportNote,
+        createdAt, createdBy, updatedAt, updatedBy,
+        ETL_LoadedAt
+    )
+    SELECT
+        t.TourID, t.DayNo, t.TourPlanID, t.Title, t.Description,
+        t.Meal, t.HotelName, t.TransportNote,
+        t.createdAt, t.createdBy, t.updatedAt, t.updatedBy,
+        v_now
+    FROM TourDetail t;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END load_Staging;
+
+-- Run Staging Insert Procedure
+BEGIN
+    load_Staging;
+    COMMIT;
+END;
 
 --Load data into Dimension Table
 create or replace PROCEDURE load_DimDate as
@@ -243,11 +275,11 @@ Begin
     SELECT DISTINCT
         TO_NUMBER(TO_CHAR(d, 'YYYYMMDD')) AS DateKey,
         d AS FullDate,
-        TO_NUMBER(TO_CHAR(d, 'DD')),
-        TO_NUMBER(TO_CHAR(d, 'MM')),
+        EXTRACT(DAY FROM d) AS Day,
+        EXTRACT(MONTH FROM d) AS Month,
         TO_CHAR(d, 'Month'),
         TO_NUMBER(TO_CHAR(d, 'Q')),
-        TO_NUMBER(TO_CHAR(d, 'YYYY'))
+        EXTRACT(YEAR FROM d) AS Year
     FROM (
         SELECT bookingdate AS d FROM STG_Booking
         UNION
@@ -262,7 +294,7 @@ Begin
         SELECT startdate FROM STG_CostDetail  -- ← เผื่อ lookup
     ) x
     WHERE d IS NOT NULL AND NOT EXISTS (SELECT 1 FROM DimDate dd WHERE dd.FullDate = x.d);
-end load_dimDate;
+end load_DimDate;
 
 create or replace PROCEDURE load_DimBooking as
     v_now TIMESTAMP := CURRENT_TIMESTAMP;
@@ -345,15 +377,15 @@ begin
             AND (
                 NVL(d.Name,'~') <> NVL(s.Name,'~')
             OR NVL(d.MinPax,-1)         <> NVL(s.MinPax,-1)
-            OR NVL(d.DiscountValue,-1)  <> NVL(s.DiscountValue,-1)
-            OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(s.StartDate,'YYYY-MM-DD'),'~')
-            OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(s.EndDate,'YYYY-MM-DD'),'~')
+            OR NVL(d.DiscountPercentage,-1)  <> NVL(s.DiscountValue,-1)
+            OR NVL(d.StartDate, DATE '1900-01-01') <> NVL(s.StartDate, DATE '1900-01-01')
+            OR NVL(d.EndDate, DATE '1900-01-01') <> NVL(s.EndDate, DATE '1900-01-01')
             OR NVL(d.Status,'~')   <> NVL(s.Status,'~')
             )
     );
 
     INSERT INTO DimPromotion (
-    PromotionID, Name, MinPax, DiscountValue, StartDate, EndDate, Status,
+    PromotionID, Name, MinPax, DiscountPercentage, StartDate, EndDate, Status,
     EffectiveFrom, EffectiveTo, IsCurrent
     )
     SELECT
@@ -373,9 +405,9 @@ begin
     OR (
             NVL(d.Name,'~') <> NVL(s.Name,'~')
         OR NVL(d.MinPax,-1)         <> NVL(s.MinPax,-1)
-        OR NVL(d.DiscountValue ,-1)  <> NVL(s.DiscountValue,-1)
-        OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(s.StartDate,'YYYY-MM-DD'),'~')
-        OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(s.EndDate,'YYYY-MM-DD'),'~')
+        OR NVL(d.DiscountPercentage ,-1)  <> NVL(s.DiscountValue,-1)
+        OR NVL(d.StartDate, DATE '1900-01-01') <> NVL(s.StartDate, DATE '1900-01-01')
+        OR NVL(d.EndDate, DATE '1900-01-01') <> NVL(s.EndDate, DATE '1900-01-01')
         OR NVL(d.Status,'~')   <> NVL(s.Status,'~')
     );
 EXCEPTION
@@ -402,8 +434,8 @@ BEGIN
               NVL(d.TourCode,   '~') <> NVL(t.TourCode,   '~')
            OR NVL(d.Name,       '~') <> NVL(t.Name,       '~')
            OR NVL(d.CapacityPax, -1) <> NVL(t.CapacityPax, -1)
-           OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(t.StartDate,'YYYY-MM-DD'),'~')
-           OR NVL(TO_CHAR(d.EndDate,  'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(t.EndDate,  'YYYY-MM-DD'),'~')
+           OR NVL(d.StartDate, DATE '1900-01-01') <> NVL(t.StartDate, DATE '1900-01-01')
+           OR NVL(d.EndDate, DATE '1900-01-01') <> NVL(t.EndDate, DATE '1900-01-01')
            OR NVL(d.TourStatus, '~') <> NVL(t.Status,     '~')
            OR NVL(d.TourTypeID, '~') <> NVL(t.TourTypeID, '~')
            OR NVL(d.TourTypeName,'~')<> NVL(tt.Name,      '~')
@@ -453,8 +485,8 @@ BEGIN
         NVL(d.TourCode,'~')     <> NVL(t.TourCode,'~')
         OR NVL(d.Name,'~')     <> NVL(t.Name,'~')
         OR NVL(d.CapacityPax,-1)   <> NVL(t.CapacityPax,-1)
-        OR NVL(TO_CHAR(d.StartDate,'YYYY-MM-DD'),'~') <> NVL(TO_CHAR(t.StartDate,'YYYY-MM-DD'),'~')
-        OR NVL(TO_CHAR(d.EndDate,'YYYY-MM-DD'),'~')   <> NVL(TO_CHAR(t.EndDate,'YYYY-MM-DD'),'~')
+        OR NVL(d.StartDate, DATE '1900-01-01') <> NVL(t.StartDate, DATE '1900-01-01')
+        OR NVL(d.EndDate, DATE '1900-01-01') <> NVL(t.EndDate, DATE '1900-01-01')
         OR NVL(d.TourStatus,'~')   <> NVL(t.Status,'~')
 
         OR NVL(d.TourTypeID,'~')   <> NVL(t.TourTypeID,'~')
@@ -590,25 +622,44 @@ EXCEPTION
 end load_dimGuide;
 
 create or replace procedure load_DimCountry as
-begin 
-    MERGE INTO DimCountry d
-    USING (
+begin
+    DELETE FROM DimCountry;
+
+    INSERT INTO DimCountry (CountryID, CountryName, RegionID, Region)
     SELECT
         c.CountryID,
         c.Name      AS CountryName,
         c.RegionID,
         r.Name      AS Region
     FROM STG_Country c
-    LEFT JOIN STG_Region r
-        ON r.RegionID = c.RegionID
-    ) s
-    ON (d.CountryID = s.CountryID)
-    WHEN MATCHED THEN
-    UPDATE SET
-        d.CountryName = s.CountryName,
-        d.RegionID    = s.RegionID,
-        d.Region      = s.Region
-    WHEN NOT MATCHED THEN
-    INSERT (CountryID, CountryName, RegionID, Region)
-    VALUES (s.CountryID, s.CountryName, s.RegionID, s.Region);
+    LEFT JOIN STG_Region r ON r.RegionID = c.RegionID;
 end load_DimCountry;
+
+-- Master ETL runner — executes all stages in dependency order
+CREATE OR REPLACE PROCEDURE run_ETL AS
+BEGIN
+    -- Stage 1: Load all OLTP data into staging
+    load_Staging;
+
+    -- Stage 2: Independent dimensions
+    load_DimDate;
+    load_DimCountry;
+    load_DimPromotion;
+    load_DimGuide;
+
+    -- Stage 3: Dimensions depending on Country
+    load_DimItemCost;
+    load_DimTour;
+
+    -- Stage 4: Dimensions depending on others
+    load_DimCustomer;
+
+    -- Stage 5: Booking dimension (depends on Customer, Promotion, Tour, Guide)
+    load_DimBooking;
+
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
+END run_ETL;
