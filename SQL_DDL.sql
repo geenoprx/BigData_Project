@@ -134,7 +134,6 @@ CREATE TABLE
         updatedAt TIMESTAMP,
         updatedBy VARCHAR2 (128)
     );
-
 --Tour
 CREATE TABLE
     Tour (
