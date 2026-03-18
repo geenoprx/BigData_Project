@@ -23,6 +23,19 @@ INSERT INTO TourType (TourTypeID, Name, Description, BasePrice, DurationDays, Ac
 INSERT INTO TourType (TourTypeID, Name, Description, BasePrice, DurationDays, ActiveFlag) VALUES ('TTINC01', 'Incentive', 'Corporate Incentive Tour', 15000, 3, 'N');
 INSERT INTO TourType (TourTypeID, Name, Description, BasePrice, DurationDays, ActiveFlag) VALUES ('TTINT02', 'Intl Medium', 'International Medium Haul Tour 7-8 Days', 39900, 7, 'Y');
 
+--Region
+INSERT INTO Region (RegionID, Name, Description) VALUES ('REG001', 'East Asia', 'East Asian countries (JP, KR, CN)');
+INSERT INTO Region (RegionID, Name, Description) VALUES ('REG002', 'ASEAN', 'Southeast Asian countries (TH, SG, VN)');
+INSERT INTO Region (RegionID, Name, Description) VALUES ('REG003', 'Europe', 'European countries');
+INSERT INTO Region (RegionID, Name, Description) VALUES ('REG004', 'Americas', 'North and South America');
+
+--Country
+INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY001', 'Thailand', 'Routes in Thailand', 'REG002');
+INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY002', 'Japan', 'Routes in Japan Tokyo-Osaka', 'REG001');
+INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY003', 'Korea', 'Routes in Seoul-Busan/Jeju', 'REG001');
+INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY004', 'Singapore', 'Routes in Singapore', 'REG002');
+INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY005', 'Vietnam', 'Routes in Hanoi-Ho Chi Minh', 'REG002');
+
 --Tour
 INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID) 
 VALUES ('T0001', 'JP-6D-TKS-01', 'TTINT01', 'JP Tokyo-Osaka', 30, DATE '2026-03-25', DATE '2026-03-30', 'OPEN', 'CTY002');
@@ -52,19 +65,6 @@ INSERT INTO CostType (CostTypeID, Name, Description) VALUES ('CT003', 'Meal', 'F
 INSERT INTO CostType (CostTypeID, Name, Description) VALUES ('CT004', 'Attraction', 'Attraction entrance fee / Ticket');
 INSERT INTO CostType (CostTypeID, Name, Description) VALUES ('CT005', 'Guide', 'Local guide fee per day');
 INSERT INTO CostType (CostTypeID, Name, Description) VALUES ('CT006', 'Ground Operator', 'Ground operator service fee per group');
-
---Region
-INSERT INTO Region (RegionID, Name, Description) VALUES ('REG001', 'East Asia', 'East Asian countries (JP, KR, CN)');
-INSERT INTO Region (RegionID, Name, Description) VALUES ('REG002', 'ASEAN', 'Southeast Asian countries (TH, SG, VN)');
-INSERT INTO Region (RegionID, Name, Description) VALUES ('REG003', 'Europe', 'European countries');
-INSERT INTO Region (RegionID, Name, Description) VALUES ('REG004', 'Americas', 'North and South America');
-
---Country
-INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY001', 'Thailand', 'Routes in Thailand', 'REG002');
-INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY002', 'Japan', 'Routes in Japan Tokyo-Osaka', 'REG001');
-INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY003', 'Korea', 'Routes in Seoul-Busan/Jeju', 'REG001');
-INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY004', 'Singapore', 'Routes in Singapore', 'REG002');
-INSERT INTO Country (CountryID, Name, Description, RegionID) VALUES ('CTY005', 'Vietnam', 'Routes in Hanoi-Ho Chi Minh', 'REG002');
 
 --ItemCost
 INSERT INTO ItemCost (ItemCostID, CostTypeID, CountryID, Name, Email, RatePerUnit, Status) VALUES ('IC0001', 'CT001', 'CTY002', 'Tokyo Hotel Twin', 'sales@tokyohotel3.jp', 6500, 'A');
@@ -103,4 +103,3 @@ INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, Boo
 INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount) VALUES ('BK0004', 'CUS00004', 'PRM0002', 'E0003', DATE '2024-02-10', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 6, 20400.00);
 INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount) VALUES ('BK0005', 'CUS00005', 'PRM0004', 'E0002', DATE '2024-08-01', 'CANCELLED', 'REFUNDED', 'CARD', 1, 1300.00);
 INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount) VALUES ('BK0006', 'CUS00001', 'PRM0001', 'E0003', DATE '2024-09-05', 'CONFIRMED', 'PAID', 'CASH', 2, 3200.00);
-
