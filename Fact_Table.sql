@@ -71,6 +71,10 @@ END PKG_LOAD_FACT_REPORTS;
 
 
 CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
+
+    -- ==========================================================
+    -- 1. Load FactRevenueAnalysis
+    -- ==========================================================
     PROCEDURE sp_load_revenue_analysis IS
     BEGIN
         -- ล้างข้อมูลเก่า
@@ -81,22 +85,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
             BookingCount, TotalPax, TotalRevenue, GrossProfit
         )
         SELECT 
+            -- แปลงวันที่จองเป็น DateKey (YYYYMMDD)
             dd.DateKey,
             
+            -- Lookup TourKey (ถ้าหาไม่เจอใส่ -1)
             dt.TourKey,
             
+            -- Lookup CustomerKey
             dc.CustomerKey,
             
+            -- Metrics
             1 AS BookingCount,                           -- 1 แถว คือ 1 Booking
-            (bd.PaxAdult + bd.PaxChild) AS TotalPax,                      -- จำนวนคนใน Booking นั้น
-            bd.SubTotalAmount AS TotalRevenue,               -- รายได้สุทธิ
+            b.TotalPax AS TotalPax,                      -- จำนวนคนใน Booking นั้น
+            b.TotalAmount AS TotalRevenue,               -- รายได้สุทธิ
             
             -- คำนวณกำไรเบื้องต้น (Revenue - Cost โดยประมาณ)
             -- หมายเหตุ: ในทางปฏิบัติควรรวม Cost จริง แต่ในที่นี้ใช้ (Revenue * 0.2) เป็นตัวอย่าง Margin 20%
-            (bd.SubTotalAmount * 0.2) AS GrossProfit
+            (b.TotalAmount * 0.2) AS GrossProfit
             
-        FROM STG_BookingDetail bd
-        JOIN STG_Booking b ON b.BookingID = bd.BookingID
+        FROM STG_Booking b
+        -- Join เพื่อหา TourID ของ Booking นั้น
+        LEFT JOIN (
+            SELECT BookingID, MIN(TourID) AS TourID  -- เอา TourID หลักแค่ 1 ตัว
+            FROM STG_BookingDetail GROUP BY BookingID
+        ) bd ON b.BookingID = bd.BookingID
+        -- Lookup Dimensions
         LEFT JOIN DimTour dt 
             ON bd.TourID = dt.TourID AND dt.IsCurrent = 'Y'
         LEFT JOIN DimCustomer dc 
@@ -107,6 +120,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
         COMMIT;
     END sp_load_revenue_analysis;
 
+
+    -- ==========================================================
+    -- 2. Load FactTripPerformance
+    -- เน้นดูต้นทุนและกำไรต่อทริป (Grain: 1 Tour)
+    -- ==========================================================
     PROCEDURE sp_load_trip_performance IS
     BEGIN
         EXECUTE IMMEDIATE 'TRUNCATE TABLE FactTripPerformance';
@@ -146,17 +164,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
         
         -- Subquery 1: หายอดขายรวม และจำนวนคน ต่อทริป
         LEFT JOIN (
-            SELECT bd.TourID, SUM(b.TotalPax) as SumPax, SUM(b.TotalAmount) as SumAmount
-            FROM STG_Booking b
-            JOIN STG_BookingDetail bd ON b.BookingID = bd.BookingID
-            GROUP BY bd.TourID
+            SELECT TourID,
+                SUM(PaxAdult + PaxChild) AS SumPax,
+                SUM(SubTotalAmount)      AS SumAmount
+            FROM STG_BookingDetail
+            GROUP BY TourID
         ) Rev ON t.TourID = Rev.TourID
         
         -- Subquery 2: หาต้นทุนรวม ต่อทริป และหา Guide คนหลัก
         LEFT JOIN (
             SELECT TourID, 
                    MAX(GuideID) as MainGuideID, -- สมมติเลือกไกด์คนหนึ่งเป็นตัวแทน
-                   SUM(FeeAmount) as SumCost
+                   SUM(FeeAmount * Quantity) as SumCost
             FROM STG_CostDetail
             GROUP BY TourID
         ) Cost ON t.TourID = Cost.TourID
@@ -168,6 +187,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
         COMMIT;
     END sp_load_trip_performance;
 
+
+    -- ==========================================================
+    -- 3. Load FactBookingStatus
+    -- เน้นดู Status การจอง และ Cancel Rate
+    -- ==========================================================
     PROCEDURE sp_load_booking_status IS
     BEGIN
         EXECUTE IMMEDIATE 'TRUNCATE TABLE FactBookingStatus';
@@ -181,17 +205,28 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
             dt.TourKey,
             db.BookingKey,
             
+            -- GuideKey (อาจจะไม่มีในระดับ Booking ต้องวิ่งไปหาผ่าน Tour)
             dg.GuideKey,
 
+            -- Metrics
             1 AS TotalBookings,
             
-            CASE WHEN b.BookingStatus = 'Cancel' THEN 1 ELSE 0 END AS CancelCount
+            -- Logic การนับ Cancel (ถ้า Status = Cancel ให้เป็น 1)
+            CASE WHEN b.BookingStatus = 'CANCELLED' THEN 1 ELSE 0 END AS CancelCount
 
         FROM STG_Booking b
-        JOIN (SELECT BookingID, MIN(TourID) AS TourID FROM STG_BookingDetail GROUP BY BookingID) bd ON b.BookingID = bd.BookingID
+        -- Join หา Tour
+        LEFT JOIN (
+            SELECT BookingID, MIN(TourID) AS TourID  -- ← MIN เพื่อเอาแค่ 1 TourID ต่อ Booking
+            FROM STG_BookingDetail
+            GROUP BY BookingID
+        ) bd ON b.BookingID = bd.BookingID
+        -- Join หา BookingMeta (Status Dimension)
         LEFT JOIN DimBooking db ON b.BookingID = db.BookingID AND db.IsCurrent = 'Y'
+        -- Join หา Tour Dimension
         LEFT JOIN DimTour dt ON bd.TourID = dt.TourID AND dt.IsCurrent = 'Y'
         
+        -- Join หา Guide (ซับซ้อนหน่อย: Booking -> Tour -> CostDetail -> Guide)
         LEFT JOIN (
             SELECT TourID, MAX(GuideID) as GuideID FROM STG_CostDetail GROUP BY TourID
         ) cd ON bd.TourID = cd.TourID
@@ -201,6 +236,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
         COMMIT;
     END sp_load_booking_status;
 
+    -- ==========================================================
+    -- Master Runner
+    -- ==========================================================
     PROCEDURE sp_run_all IS
     BEGIN
         sp_load_revenue_analysis;
