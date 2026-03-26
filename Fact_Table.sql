@@ -124,68 +124,64 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
     -- ==========================================================
     -- 2. Load FactTripPerformance
     -- เน้นดูต้นทุนและกำไรต่อทริป (Grain: 1 Tour)
+    -- Revenue  = SubTotalAmount จาก booking จริง (ไม่นับ CANCELLED)
+    -- Cost     = FeeAmount × Quantity จาก CostDetail
+    -- Profit   = Revenue - Cost
     -- ==========================================================
     PROCEDURE sp_load_trip_performance IS
     BEGIN
         EXECUTE IMMEDIATE 'TRUNCATE TABLE FactTripPerformance';
-
+ 
         INSERT INTO FactTripPerformance (
-            DateKey, TourKey, GuideKey, -- SupplierKey ตัดออกก่อน
+            DateKey, TourKey, GuideKey,
             TotalTrips, PaxPerTrip, TotalTripCost, TotalTripRev, TripProfit
         )
-        SELECT 
-            -- วันที่เริ่มเดินทาง
+        SELECT
             dd.DateKey,
-            
-            -- TourKey
             dt.TourKey,
-            
-            -- GuideKey (หาจาก CostDetail ที่เป็นค่าไกด์ หรือถ้าไม่มีใส่ Unknown)
             dg.GuideKey,
-            
-            -- Metrics
-            1 AS TotalTrips,                             -- 1 แถว คือ 1 ทริป
-            
-            -- นับจำนวนคนรวมทั้งหมดในทริปนั้น (จาก Booking)
-            NVL(Rev.SumPax, 0) AS PaxPerTrip,
-            
-            -- ต้นทุนรวมของทริป (จาก CostDetail)
-            NVL(Cost.SumCost, 0) AS TotalTripCost,
-            
-            -- รายได้รวมของทริป (จาก Booking)
-            NVL(Rev.SumAmount, 0) AS TotalTripRev,
-            
-            -- กำไรสุทธิ (รายได้ - ต้นทุน)
-            (NVL(Rev.SumAmount, 0) - NVL(Cost.SumCost, 0)) AS TripProfit
-
+            1                                               AS TotalTrips,
+            NVL(Rev.SumPax,    0)                           AS PaxPerTrip,
+            NVL(Cost.SumCost,  0)                           AS TotalTripCost,
+            NVL(Rev.SumAmount, 0)                           AS TotalTripRev,
+            NVL(Rev.SumAmount, 0) - NVL(Cost.SumCost, 0)   AS TripProfit
+ 
         FROM STG_Tour t
-        -- Lookup DimTour
-        LEFT JOIN DimTour dt ON t.TourID = dt.TourID AND dt.IsCurrent = 'Y'
-        
-        -- Subquery 1: หายอดขายรวม และจำนวนคน ต่อทริป
+ 
+        LEFT JOIN DimTour dt
+            ON t.TourID = dt.TourID AND dt.IsCurrent = 'Y'
+ 
+        -- Revenue: รวมเฉพาะ booking ที่ไม่ใช่ CANCELLED
         LEFT JOIN (
-            SELECT TourID,
-                SUM(PaxAdult + PaxChild) AS SumPax,
-                SUM(SubTotalAmount)      AS SumAmount
-            FROM STG_BookingDetail
-            GROUP BY TourID
+            SELECT
+                bd.TourID,
+                SUM(bd.PaxAdult + bd.PaxChild)  AS SumPax,
+                SUM(bd.SubTotalAmount)           AS SumAmount
+            FROM STG_BookingDetail bd
+            JOIN STG_Booking b
+                ON b.BookingID = bd.BookingID
+               AND b.BookingStatus NOT IN ('CANCELLED')   -- ← กรองออก
+            GROUP BY bd.TourID
         ) Rev ON t.TourID = Rev.TourID
-        
-        -- Subquery 2: หาต้นทุนรวม ต่อทริป และหา Guide คนหลัก
+ 
+        -- Cost: FeeAmount × Quantity รวมทุก item ของ tour นั้น
         LEFT JOIN (
-            SELECT TourID, 
-                   MAX(GuideID) as MainGuideID, -- สมมติเลือกไกด์คนหนึ่งเป็นตัวแทน
-                   SUM(FeeAmount * Quantity) as SumCost
+            SELECT
+                TourID,
+                MAX(GuideID)                        AS MainGuideID,
+                SUM(FeeAmount * Quantity)           AS SumCost
             FROM STG_CostDetail
             GROUP BY TourID
         ) Cost ON t.TourID = Cost.TourID
-        
-        -- Lookup DimGuide
-        LEFT JOIN DimGuide dg ON Cost.MainGuideID = dg.GuideID AND dg.IsCurrent = 'Y'
-        LEFT JOIN DimDate dd ON dd.FullDate = t.StartDate;
-
+ 
+        LEFT JOIN DimGuide dg
+            ON Cost.MainGuideID = dg.GuideID AND dg.IsCurrent = 'Y'
+        LEFT JOIN DimDate dd
+            ON dd.FullDate = t.StartDate;
+ 
         COMMIT;
     END sp_load_trip_performance;
+ 
 
 
     -- ==========================================================
