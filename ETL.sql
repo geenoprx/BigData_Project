@@ -623,16 +623,22 @@ end load_dimGuide;
 
 create or replace procedure load_DimCountry as
 begin
-    DELETE FROM DimCountry;
-
-    INSERT INTO DimCountry (CountryID, CountryName, RegionID, Region)
-    SELECT
-        c.CountryID,
-        c.Name      AS CountryName,
-        c.RegionID,
-        r.Name      AS Region
-    FROM STG_Country c
-    LEFT JOIN STG_Region r ON r.RegionID = c.RegionID;
+    MERGE INTO DimCountry tgt
+    USING (
+        SELECT c.CountryID,
+               c.Name    AS CountryName,
+               c.RegionID,
+               r.Name    AS Region
+        FROM STG_Country c
+        LEFT JOIN STG_Region r ON r.RegionID = c.RegionID
+    ) src ON (tgt.CountryID = src.CountryID)
+    WHEN MATCHED THEN
+        UPDATE SET tgt.CountryName = src.CountryName,
+                   tgt.RegionID    = src.RegionID,
+                   tgt.Region      = src.Region
+    WHEN NOT MATCHED THEN
+        INSERT (CountryID, CountryName, RegionID, Region)
+        VALUES (src.CountryID, src.CountryName, src.RegionID, src.Region);
 end load_DimCountry;
 
 -- Master ETL runner — executes all stages in dependency order
@@ -657,7 +663,10 @@ BEGIN
     -- Stage 5: Booking dimension (depends on Customer, Promotion, Tour, Guide)
     load_DimBooking;
 
+    PKG_LOAD_FACT_REPORTS.sp_run_all;
+
     COMMIT;
+
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;

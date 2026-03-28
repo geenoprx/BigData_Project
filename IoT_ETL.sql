@@ -196,6 +196,7 @@ BEGIN
 
     PKG_LOAD_IOT_FACTS.sp_run_all;
 
+    COMMIT;
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
