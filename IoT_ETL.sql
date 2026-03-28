@@ -207,6 +207,5 @@ END run_IoT_ETL;
 
 BEGIN
     run_IoT_ETL;
-    COMMIT;
 END;
 /
