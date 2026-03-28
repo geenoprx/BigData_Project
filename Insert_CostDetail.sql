@@ -1,5 +1,5 @@
+-- DML: seed CostDetail records via pkg_costdetail.sp_cost_add_detail
 BEGIN
-  -- 1: Tour T0001 / Guide G0001 / IC0001
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0001',
     p_guideid   => 'G0001',
@@ -11,7 +11,6 @@ BEGIN
     p_enddate   => DATE '2026-03-30'
   );
 
-  -- 2: Tour T0001 / ไม่มี guide (NULL)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0001',
     p_guideid   => NULL,
@@ -23,7 +22,6 @@ BEGIN
     p_enddate   => DATE '2026-03-25'
   );
 
-  -- 3: Tour T0001 / Guide G0002 / อาหาร
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0001',
     p_guideid   => 'G0002',
@@ -35,7 +33,6 @@ BEGIN
     p_enddate   => DATE '2026-03-26'
   );
 
-  -- 4: Tour T0002 / Guide G0001
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0002',
     p_guideid   => 'G0001',
@@ -47,7 +44,6 @@ BEGIN
     p_enddate   => DATE '2026-04-15'
   );
 
-  -- 5: Tour T0002 / Bus
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0002',
     p_guideid   => NULL,
@@ -59,7 +55,6 @@ BEGIN
     p_enddate   => DATE '2026-04-10'
   );
 
-  -- 6: Tour T0003 / Guide G0003 / Van TH
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0003',
     p_guideid   => 'G0003',
@@ -71,7 +66,6 @@ BEGIN
     p_enddate   => DATE '2026-02-22'
   );
 
-  -- 7: Tour T0003 / อาหาร TH
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0003',
     p_guideid   => 'G0003',
@@ -83,7 +77,6 @@ BEGIN
     p_enddate   => DATE '2026-02-21'
   );
 
-  -- 8: Tour T0004 / Guide G0005 / Ground operator SG
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0004',
     p_guideid   => 'G0005',
@@ -95,7 +88,6 @@ BEGIN
     p_enddate   => DATE '2026-05-04'
   );
 
-  -- 9: Tour T0005 / Guide G0004 / KR tour
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0005',
     p_guideid   => 'G0004',
@@ -107,7 +99,6 @@ BEGIN
     p_enddate   => DATE '2026-06-14'
   );
 
-  -- 10: Tour T0005 / ไม่มี guide (ค่าตั๋ว attraction)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid    => 'T0005',
     p_guideid   => NULL,
@@ -119,7 +110,6 @@ BEGIN
     p_enddate   => DATE '2026-06-11'
   );
 
-  -- 11: T0001 เพิ่มค่า attraction
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => NULL,
@@ -131,7 +121,6 @@ BEGIN
     p_enddate    => DATE '2026-03-27'
   );
 
-  -- 12: T0001 guide G0001 เพิ่ม day trip
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => 'G0001',
@@ -143,7 +132,6 @@ BEGIN
     p_enddate    => DATE '2026-03-28'
   );
 
-  -- 13: T0002 attraction
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => NULL,
@@ -155,7 +143,6 @@ BEGIN
     p_enddate    => DATE '2026-04-12'
   );
 
-  -- 14: T0002 guide G0002
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => 'G0002',
@@ -167,7 +154,6 @@ BEGIN
     p_enddate    => DATE '2026-04-13'
   );
 
-  -- 15: T0003 extra van day
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0003',
     p_guideid    => 'G0003',
@@ -179,7 +165,6 @@ BEGIN
     p_enddate    => DATE '2026-02-21'
   );
 
-  -- 16: T0003 hotel (ใช้ IC0001 สมมติ rate ต่างประเทศ)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0003',
     p_guideid    => NULL,
@@ -191,7 +176,6 @@ BEGIN
     p_enddate    => DATE '2026-02-22'
   );
 
-  -- 17: T0004 meals SG
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0004',
     p_guideid    => 'G0005',
@@ -203,7 +187,6 @@ BEGIN
     p_enddate    => DATE '2026-05-02'
   );
 
-  -- 18: T0004 bus SG
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0004',
     p_guideid    => NULL,
@@ -215,7 +198,6 @@ BEGIN
     p_enddate    => DATE '2026-05-02'
   );
 
-  -- 19: T0005 hotel KR (reuse IC0001 เป็น generic hotel)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0005',
     p_guideid    => 'G0004',
@@ -227,7 +209,6 @@ BEGIN
     p_enddate    => DATE '2026-06-14'
   );
 
-  -- 20: T0005 bus KR
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0005',
     p_guideid    => NULL,
@@ -239,7 +220,6 @@ BEGIN
     p_enddate    => DATE '2026-06-11'
   );
 
-  -- 21: T0005 extra meals
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0005',
     p_guideid    => 'G0004',
@@ -251,7 +231,6 @@ BEGIN
     p_enddate    => DATE '2026-06-12'
   );
 
-  -- 22: T0001 ground operator (IC0006)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => NULL,
@@ -263,7 +242,6 @@ BEGIN
     p_enddate    => DATE '2026-03-30'
   );
 
-  -- 23: T0002 ground operator
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => NULL,
@@ -275,7 +253,6 @@ BEGIN
     p_enddate    => DATE '2026-04-15'
   );
 
-  -- 24: T0003 ground operator TH (reuse IC0006)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0003',
     p_guideid    => NULL,
@@ -287,7 +264,6 @@ BEGIN
     p_enddate    => DATE '2026-02-22'
   );
 
-  -- 25: T0004 extra handling SG
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0004',
     p_guideid    => 'G0005',
@@ -299,7 +275,6 @@ BEGIN
     p_enddate    => DATE '2026-05-04'
   );
 
-  -- 26: T0006 incentive TH, guide G0003
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0006',
     p_guideid    => 'G0003',
@@ -311,7 +286,6 @@ BEGIN
     p_enddate    => DATE '2026-07-07'
   );
 
-  -- 27: T0006 hotel
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0006',
     p_guideid    => NULL,
@@ -323,7 +297,6 @@ BEGIN
     p_enddate    => DATE '2026-07-07'
   );
 
-  -- 28: T0006 meals
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0006',
     p_guideid    => 'G0003',
@@ -335,7 +308,6 @@ BEGIN
     p_enddate    => DATE '2026-07-06'
   );
 
-  -- 29: T0002 extra bus half day
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => NULL,
@@ -347,7 +319,6 @@ BEGIN
     p_enddate    => DATE '2026-04-14'
   );
 
-  -- 30: T0001 extra CNX-style van reuse IC0005
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => 'G0002',
@@ -359,7 +330,6 @@ BEGIN
     p_enddate    => DATE '2026-03-29'
   );
 
-  -- 31: T0001 small extra meal
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => 'G0001',
@@ -371,7 +341,6 @@ BEGIN
     p_enddate    => DATE '2026-03-26'
   );
 
-  -- 32: T0001 extra attraction
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => NULL,
@@ -383,7 +352,6 @@ BEGIN
     p_enddate    => DATE '2026-03-29'
   );
 
-  -- 33: T0002 guide overtime
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => 'G0002',
@@ -395,7 +363,6 @@ BEGIN
     p_enddate    => DATE '2026-04-14'
   );
 
-  -- 34: T0002 extra meals
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => 'G0001',
@@ -407,7 +374,6 @@ BEGIN
     p_enddate    => DATE '2026-04-11'
   );
 
-  -- 35: T0003 snack
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0003',
     p_guideid    => 'G0003',
@@ -419,7 +385,6 @@ BEGIN
     p_enddate    => DATE '2026-02-21'
   );
 
-  -- 36: T0003 extra hotel night
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0003',
     p_guideid    => NULL,
@@ -431,7 +396,6 @@ BEGIN
     p_enddate    => DATE '2026-02-19'
   );
 
-  -- 37: T0004 river cruise
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0004',
     p_guideid    => 'G0005',
@@ -443,7 +407,6 @@ BEGIN
     p_enddate    => DATE '2026-05-03'
   );
 
-  -- 38: T0004 airport transfer
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0004',
     p_guideid    => NULL,
@@ -455,7 +418,6 @@ BEGIN
     p_enddate    => DATE '2026-05-01'
   );
 
-  -- 39: T0005 Nami Island ticket (reuse IC0004)
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0005',
     p_guideid    => NULL,
@@ -467,7 +429,6 @@ BEGIN
     p_enddate    => DATE '2026-06-12'
   );
 
-  -- 40: T0005 extra van
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0005',
     p_guideid    => 'G0004',
@@ -479,7 +440,6 @@ BEGIN
     p_enddate    => DATE '2026-06-13'
   );
 
-  -- 41: T0006 team dinner
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0006',
     p_guideid    => 'G0003',
@@ -491,7 +451,6 @@ BEGIN
     p_enddate    => DATE '2026-07-06'
   );
 
-  -- 42: T0006 city tour bus
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0006',
     p_guideid    => NULL,
@@ -503,7 +462,6 @@ BEGIN
     p_enddate    => DATE '2026-07-05'
   );
 
-  -- 43: T0001 late check-out
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => NULL,
@@ -515,7 +473,6 @@ BEGIN
     p_enddate    => DATE '2026-03-30'
   );
 
-  -- 44: T0002 luggage handling
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => 'G0002',
@@ -527,7 +484,6 @@ BEGIN
     p_enddate    => DATE '2026-04-15'
   );
 
-  -- 45: T0003 local show ticket
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0003',
     p_guideid    => 'G0003',
@@ -539,7 +495,6 @@ BEGIN
     p_enddate    => DATE '2026-02-21'
   );
 
-  -- 46: T0004 extra hotel night
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0004',
     p_guideid    => NULL,
@@ -551,7 +506,6 @@ BEGIN
     p_enddate    => DATE '2026-04-30'
   );
 
-  -- 47: T0005 night snack
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0005',
     p_guideid    => 'G0004',
@@ -563,7 +517,6 @@ BEGIN
     p_enddate    => DATE '2026-06-11'
   );
 
-  -- 48: T0006 optional activity
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0006',
     p_guideid    => NULL,
@@ -575,7 +528,6 @@ BEGIN
     p_enddate    => DATE '2026-07-06'
   );
 
-  -- 49: T0001 extra bus hour
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0001',
     p_guideid    => NULL,
@@ -587,7 +539,6 @@ BEGIN
     p_enddate    => DATE '2026-03-28'
   );
 
-  -- 50: T0002 final dinner upgrade
   pkg_costdetail.sp_cost_add_detail(
     p_tourid     => 'T0002',
     p_guideid    => 'G0001',

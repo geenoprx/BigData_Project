@@ -1,3 +1,4 @@
+-- Staging tables: mirror OLTP schema with no data (CTAS, no constraints)
 CREATE TABLE STG_Booking       AS SELECT * FROM Booking       WHERE 1=0;
 CREATE TABLE STG_BookingDetail AS SELECT * FROM BookingDetail WHERE 1=0;
 CREATE TABLE STG_Customer      AS SELECT * FROM Customer      WHERE 1=0;
@@ -18,6 +19,7 @@ CREATE TABLE STG_Guide          AS SELECT * FROM Guide          WHERE 1=0;
 CREATE TABLE STG_TourDetail     AS SELECT * FROM TourDetail     WHERE 1=0;
 
 
+-- Alter: add ETL timestamp column to all staging tables
 ALTER TABLE STG_Booking          ADD (ETL_LoadedAt TIMESTAMP);
 ALTER TABLE STG_BookingDetail    ADD (ETL_LoadedAt TIMESTAMP);
 ALTER TABLE STG_Customer         ADD (ETL_LoadedAt TIMESTAMP);

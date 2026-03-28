@@ -1,8 +1,5 @@
+-- DML: seed PromotionDetail records via pkg_promodetail.sp_promo_add_detail
 BEGIN
-  ------------------------------------------------------------------
-  -- PRM0001 ผูกกับหลายทัวร์ (T0001–T0005)
-  ------------------------------------------------------------------
-  -- 1
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0001',
@@ -13,7 +10,6 @@ BEGIN
     p_minbookamount   => 50000
   );
 
-  -- 2
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0002',
@@ -24,7 +20,6 @@ BEGIN
     p_minbookamount   => 60000
   );
 
-  -- 3
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0003',
@@ -35,7 +30,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  -- 4
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0004',
@@ -46,7 +40,6 @@ BEGIN
     p_minbookamount   => 40000
   );
 
-  -- 5
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0005',
@@ -57,10 +50,6 @@ BEGIN
     p_minbookamount   => 70000
   );
 
-  ------------------------------------------------------------------
-  -- PRM0002 Group 10 discount
-  ------------------------------------------------------------------
-  -- 6
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0001',
@@ -71,7 +60,6 @@ BEGIN
     p_minbookamount   => 100000
   );
 
-  -- 7
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0002',
@@ -82,7 +70,6 @@ BEGIN
     p_minbookamount   => 120000
   );
 
-  -- 8
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0003',
@@ -93,7 +80,6 @@ BEGIN
     p_minbookamount   => 40000
   );
 
-  -- 9
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0004',
@@ -104,7 +90,6 @@ BEGIN
     p_minbookamount   => 60000
   );
 
-  -- 10
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0005',
@@ -115,10 +100,6 @@ BEGIN
     p_minbookamount   => 90000
   );
 
-  ------------------------------------------------------------------
-  -- PRM0003 New Year Flash Sale (สั้น ๆ ช่วงปลายปี)
-  ------------------------------------------------------------------
-  -- 11
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0003',
     p_tourid          => 'T0001',
@@ -129,7 +110,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  -- 12
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0003',
     p_tourid          => 'T0002',
@@ -140,7 +120,6 @@ BEGIN
     p_minbookamount   => 35000
   );
 
-  -- 13
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0003',
     p_tourid          => 'T0003',
@@ -151,7 +130,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 14
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0003',
     p_tourid          => 'T0004',
@@ -162,7 +140,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  -- 15
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0003',
     p_tourid          => 'T0005',
@@ -173,10 +150,6 @@ BEGIN
     p_minbookamount   => 40000
   );
 
-  ------------------------------------------------------------------
-  -- PRM0004 Repeat customer voucher
-  ------------------------------------------------------------------
-  -- 16
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0001',
@@ -187,7 +160,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 17
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0002',
@@ -198,7 +170,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  -- 18
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0003',
@@ -209,7 +180,6 @@ BEGIN
     p_minbookamount   => 15000
   );
 
-  -- 19
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0004',
@@ -220,7 +190,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 20
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0005',
@@ -231,10 +200,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  ------------------------------------------------------------------
-  -- PRM0005 Low season special (ผูกทัวร์หลายประเทศ)
-  ------------------------------------------------------------------
-  -- 21
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0001',
@@ -245,7 +210,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  -- 22
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0002',
@@ -256,7 +220,6 @@ BEGIN
     p_minbookamount   => 35000
   );
 
-  -- 23
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0003',
@@ -267,7 +230,6 @@ BEGIN
     p_minbookamount   => 15000
   );
 
-  -- 24
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0004',
@@ -278,7 +240,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 25
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0005',
@@ -289,10 +250,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  ------------------------------------------------------------------
-  -- PRM0006 Credit card bank X
-  ------------------------------------------------------------------
-  -- 26
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0001',
@@ -303,7 +260,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 27
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0002',
@@ -314,7 +270,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  -- 28
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0003',
@@ -325,7 +280,6 @@ BEGIN
     p_minbookamount   => 15000
   );
 
-  -- 29
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0004',
@@ -336,7 +290,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 30
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0005',
@@ -347,10 +300,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  ------------------------------------------------------------------
-  -- เพิ่ม variation ซ้ำ tour เดิมอีก 20 รายการ (เปลี่ยน % / min)
-  ------------------------------------------------------------------
-  -- 31
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0006',
@@ -361,7 +310,6 @@ BEGIN
     p_minbookamount   => 50000
   );
 
-  -- 32
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0006',
@@ -372,7 +320,6 @@ BEGIN
     p_minbookamount   => 70000
   );
 
-  -- 33
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0003',
     p_tourid          => 'T0006',
@@ -383,7 +330,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  -- 34
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0006',
@@ -394,7 +340,6 @@ BEGIN
     p_minbookamount   => 20000
   );
 
-  -- 35
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0006',
@@ -405,7 +350,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  -- 36
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0006',
@@ -416,7 +360,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  -- 37
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0001',
@@ -427,7 +370,6 @@ BEGIN
     p_minbookamount   => 45000
   );
 
-  -- 38
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0002',
@@ -438,7 +380,6 @@ BEGIN
     p_minbookamount   => 80000
   );
 
-  -- 39
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0003',
@@ -449,7 +390,6 @@ BEGIN
     p_minbookamount   => 18000
   );
 
-  -- 40
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0004',
@@ -460,7 +400,6 @@ BEGIN
     p_minbookamount   => 22000
   );
 
-  -- 41
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0005',
     p_tourid          => 'T0005',
@@ -471,7 +410,6 @@ BEGIN
     p_minbookamount   => 26000
   );
 
-  -- 42
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0002',
@@ -482,7 +420,6 @@ BEGIN
     p_minbookamount   => 55000
   );
 
-  -- 43
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0001',
     p_tourid          => 'T0001',
@@ -493,7 +430,6 @@ BEGIN
     p_minbookamount   => 60000
   );
 
-  -- 44
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0002',
     p_tourid          => 'T0004',
@@ -504,7 +440,6 @@ BEGIN
     p_minbookamount   => 50000
   );
 
-  -- 45
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0001',
@@ -515,7 +450,6 @@ BEGIN
     p_minbookamount   => 30000
   );
 
-  -- 46
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0004',
     p_tourid          => 'T0005',
@@ -526,7 +460,6 @@ BEGIN
     p_minbookamount   => 35000
   );
 
-  -- 47
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0001',
@@ -537,7 +470,6 @@ BEGIN
     p_minbookamount   => 25000
   );
 
-  -- 48
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0002',
@@ -548,7 +480,6 @@ BEGIN
     p_minbookamount   => 28000
   );
 
-  -- 49
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0004',
@@ -559,7 +490,6 @@ BEGIN
     p_minbookamount   => 22000
   );
 
-  -- 50
   pkg_promodetail.sp_promo_add_detail(
     p_promotionid     => 'PRM0006',
     p_tourid          => 'T0005',

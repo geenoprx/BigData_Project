@@ -1,8 +1,5 @@
+-- DML: seed TourDetail records via pkg_tourdetail.sp_tour_add_detail
 BEGIN
-  ------------------------------------------------------------------
-  -- T0001 JP Tokyo-Osaka 6D (TPJP6D01) : 6 วัน
-  ------------------------------------------------------------------
-  -- 1
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -13,7 +10,6 @@ BEGIN
     p_transportnote => 'Plane / Coach'
   );
 
-  -- 2
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -24,7 +20,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 3
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -35,7 +30,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 4
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -46,7 +40,6 @@ BEGIN
     p_transportnote => 'Coach / own'
   );
 
-  -- 5
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -57,7 +50,6 @@ BEGIN
     p_transportnote => 'Shinkansen'
   );
 
-  -- 6
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -68,10 +60,6 @@ BEGIN
     p_transportnote => 'Plane'
   );
 
-  ------------------------------------------------------------------
-  -- T0002 JP Tokyo-Osaka 6D Autumn (TPJP6D02) : 6 วัน
-  ------------------------------------------------------------------
-  -- 7
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0002',
     p_tourplanid    => 'TPJP6D02',
@@ -82,7 +70,6 @@ BEGIN
     p_transportnote => 'Plane / Coach'
   );
 
-  -- 8
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0002',
     p_tourplanid    => 'TPJP6D02',
@@ -93,7 +80,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 9
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0002',
     p_tourplanid    => 'TPJP6D02',
@@ -104,7 +90,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 10
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0002',
     p_tourplanid    => 'TPJP6D02',
@@ -115,7 +100,6 @@ BEGIN
     p_transportnote => 'Own'
   );
 
-  -- 11
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0002',
     p_tourplanid    => 'TPJP6D02',
@@ -126,7 +110,6 @@ BEGIN
     p_transportnote => 'Shinkansen'
   );
 
-  -- 12
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0002',
     p_tourplanid    => 'TPJP6D02',
@@ -137,10 +120,6 @@ BEGIN
     p_transportnote => 'Plane'
   );
 
-  ------------------------------------------------------------------
-  -- T0003 CNX 3D Highlight (TPCNX3D1) : 3 วัน
-  ------------------------------------------------------------------
-  -- 13
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0003',
     p_tourplanid    => 'TPCNX3D1',
@@ -151,7 +130,6 @@ BEGIN
     p_transportnote => 'Plane / Van'
   );
 
-  -- 14
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0003',
     p_tourplanid    => 'TPCNX3D1',
@@ -162,7 +140,6 @@ BEGIN
     p_transportnote => 'Van'
   );
 
-  -- 15
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0003',
     p_tourplanid    => 'TPCNX3D1',
@@ -173,10 +150,6 @@ BEGIN
     p_transportnote => 'Plane'
   );
 
-  ------------------------------------------------------------------
-  -- T0004 SG 4D Free & Easy (TPSG4D01) : 4 วัน
-  ------------------------------------------------------------------
-  -- 16
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0004',
     p_tourplanid    => 'TPSG4D01',
@@ -187,7 +160,6 @@ BEGIN
     p_transportnote => 'Plane / Coach'
   );
 
-  -- 17
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0004',
     p_tourplanid    => 'TPSG4D01',
@@ -198,7 +170,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 18
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0004',
     p_tourplanid    => 'TPSG4D01',
@@ -209,7 +180,6 @@ BEGIN
     p_transportnote => 'Own'
   );
 
-  -- 19
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0004',
     p_tourplanid    => 'TPSG4D01',
@@ -220,10 +190,6 @@ BEGIN
     p_transportnote => 'Plane'
   );
 
-  ------------------------------------------------------------------
-  -- T0005 KR Seoul-Jeju 5D (TPKR5D01) : 5 วัน
-  ------------------------------------------------------------------
-  -- 20
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -234,7 +200,6 @@ BEGIN
     p_transportnote => 'Plane / Coach'
   );
 
-  -- 21
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -245,7 +210,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 22
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -256,7 +220,6 @@ BEGIN
     p_transportnote => 'Plane / Coach'
   );
 
-  -- 23
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -267,7 +230,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 24
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -278,10 +240,6 @@ BEGIN
     p_transportnote => 'Plane'
   );
 
-  ------------------------------------------------------------------
-  -- T0006 Incentive TH 3D (ใช้ TPCNX3D1 เป็นแผนพื้นฐาน) : 3 วัน
-  ------------------------------------------------------------------
-  -- 25
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0006',
     p_tourplanid    => 'TPCNX3D1',
@@ -292,7 +250,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 26
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0006',
     p_tourplanid    => 'TPCNX3D1',
@@ -303,7 +260,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 27
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0006',
     p_tourplanid    => 'TPCNX3D1',
@@ -314,10 +270,6 @@ BEGIN
     p_transportnote => 'Coach / Plane'
   );
 
-  ------------------------------------------------------------------
-  -- เพิ่ม variation ย่อย ๆ ให้แต่ละทัวร์มี detail เพิ่ม (จนครบ ~50)
-  ------------------------------------------------------------------
-  -- 28: Extra optional tour day in T0001
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -328,7 +280,6 @@ BEGIN
     p_transportnote => 'Own'
   );
 
-  -- 29
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -339,7 +290,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 30: extra CNX options
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0003',
     p_tourplanid    => 'TPCNX3D1',
@@ -350,7 +300,6 @@ BEGIN
     p_transportnote => 'Own'
   );
 
-  -- 31
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0003',
     p_tourplanid    => 'TPCNX3D1',
@@ -361,7 +310,6 @@ BEGIN
     p_transportnote => 'Van'
   );
 
-  -- 32: SG optional
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0004',
     p_tourplanid    => 'TPSG4D01',
@@ -372,7 +320,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 33
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0004',
     p_tourplanid    => 'TPSG4D01',
@@ -383,7 +330,6 @@ BEGIN
     p_transportnote => 'Own'
   );
 
-  -- 34: KR optional
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -394,7 +340,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 35
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0005',
     p_tourplanid    => 'TPKR5D01',
@@ -405,7 +350,6 @@ BEGIN
     p_transportnote => 'Coach'
   );
 
-  -- 36–50: เติม extra free time / shopping slots สลับทัวร์
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0001',
     p_tourplanid    => 'TPJP6D01',
@@ -495,7 +439,7 @@ BEGIN
     p_hotelname     => 'Bangkok Hotel',
     p_transportnote => 'Coach'
   );
-  
+
   pkg_tourdetail.sp_tour_add_detail(
     p_tourid        => 'T0006',
     p_tourplanid    => 'TPCNX3D1',

@@ -1,3 +1,4 @@
+-- Dimension: DimDate — date attributes for time-based analysis
 create table DimDate (
     DateKey NUMBER PRIMARY KEY,
     FullDate DATE NOT NULL,
@@ -8,6 +9,7 @@ create table DimDate (
     Year NUMBER NOT NULL
 );
 
+-- Dimension: DimBooking — SCD Type 2 tracking of booking status and payment changes
 create table DimBooking(
     BookingKey Number  Generated always AS IDENTITY PRIMARY KEY,
     BookingID VARCHAR2(8) NOT NULL,
@@ -21,6 +23,7 @@ create table DimBooking(
     CONSTRAINT CK_DimBooking_IsCurrent CHECK (IsCurrent IN ('Y', 'N'))
 );
 
+-- Dimension: DimCustomer — SCD Type 2 tracking of customer profile and type changes
 create table DimCustomer(
     CustomerKey Number Generated always AS IDENTITY PRIMARY KEY,
     CustomerID varchar2(8) NOT NULL,
@@ -36,6 +39,7 @@ create table DimCustomer(
     CONSTRAINT CK_DimCustomer_IsCurrent CHECK (IsCurrent IN ('Y', 'N'))
 );
 
+-- Dimension: DimTour — SCD Type 2 tracking of tour package, type, and destination changes
 create table DimTour(
     TourKey Number Generated always AS IDENTITY PRIMARY KEY,
     TourID varchar2(8) NOT NULL,
@@ -61,6 +65,7 @@ create table DimTour(
     CONSTRAINT CK_DimTour_IsCurrent CHECK (IsCurrent in ('Y', 'N'))
 );
 
+-- Dimension: DimPromotion — SCD Type 2 tracking of promotion rule changes
 create table DimPromotion(
     PromotionKey Number Generated always AS IDENTITY PRIMARY KEY,
     PromotionID varchar2(8) NOT NULL,
@@ -77,6 +82,7 @@ create table DimPromotion(
     CONSTRAINT CK_DimPromo_IsCurrent CHECK (IsCurrent IN ('Y', 'N'))
 );
 
+-- Dimension: DimGuide — SCD Type 2 tracking of guide profile and status changes
 create table DimGuide(
     GuideKey Number Generated always AS IDENTITY PRIMARY KEY,
     GuideID Varchar2(8) not null,
@@ -89,9 +95,10 @@ create table DimGuide(
     EffectiveTo TIMESTAMP,
     IsCurrent char(1) DEFAULT 'Y' NOT NULL,
     CONSTRAINT UQ_DimGuide_Current UNIQUE (GuideID, IsCurrent),
-    CONSTRAINT CK_DimGuide_IsCurrent CHECK (IsCurrent IN ('Y', 'N')) 
+    CONSTRAINT CK_DimGuide_IsCurrent CHECK (IsCurrent IN ('Y', 'N'))
 );
 
+-- Dimension: DimCountry — static country and region lookup
 create table DimCountry(
     CountryKey Number Generated always AS IDENTITY PRIMARY KEY,
     CountryID Varchar2(8) not null,
@@ -102,6 +109,7 @@ create table DimCountry(
     CONSTRAINT UQ_DimCountry_CountryName UNIQUE (CountryName)
 );
 
+-- Dimension: DimItemCost — SCD Type 2 tracking of cost item (supplier) rate and type changes
 create table DimItemCost(
     ItemCostKey Number Generated always AS IDENTITY PRIMARY KEY,
     ItemCostID varchar2(8) not null,
