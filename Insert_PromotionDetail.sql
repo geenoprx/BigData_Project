@@ -1,503 +1,250 @@
--- DML: seed PromotionDetail records via pkg_promodetail.sp_promo_add_detail
+/* ============================================================
+   Insert_PromotionDetail.sql
+   โปรโมชันรายทัวร์ — % ส่วนลดและเงื่อนไขสอดคล้องกับ Promotion header
+   PromotionDetail.DiscountPercent คือส่วนลดจริง (% ต่อทัวร์นั้นๆ)
+   MinBookAmount ต้องมากกว่าหรือเท่ากับ UnitPrice × MinPax
+   ============================================================ */
 BEGIN
+  /* ============================================================
+     PRM0001 : Early Bird 60 Days  (MinPax=2, Status=ACTIVE)
+     ผูกกับ JP Sakura, JP Autumn, SG, KR — ทัวร์ที่ราคาสูงและซื้อล่วงหน้า
+     ไม่ผูก CNX (ราคาต่ำ Early Bird ไม่ค่อย make sense) และ Incentive (B2B)
+  ============================================================ */
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0001',
-    p_discountpercent => 10,
-    p_startdate       => DATE '2026-01-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Early bird >=60 days',
-    p_minbookamount   => 50000
+    p_promotionid=>'PRM0001', p_tourid=>'T0001',
+    p_discountpercent=>10,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-03-24',
+    p_extracondition=>'จองก่อนวันออกเดินทาง >= 60 วัน | ชำระมัดจำ 50% ภายใน 3 วัน | สำหรับผู้ใหญ่เท่านั้น',
+    p_minbookamount=>59800   -- 2 pax × 29,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0001', p_tourid=>'T0002',
+    p_discountpercent=>10,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-04-09',
+    p_extracondition=>'จองก่อนวันออกเดินทาง >= 60 วัน | ชำระมัดจำ 50% ภายใน 3 วัน',
+    p_minbookamount=>63000   -- 2 pax × 31,500 (Autumn peak rate)
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0001', p_tourid=>'T0004',
+    p_discountpercent=>8,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-04-30',
+    p_extracondition=>'จองก่อนวันออกเดินทาง >= 60 วัน (SG Free & Easy)',
+    p_minbookamount=>39800   -- 2 pax × 19,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0001', p_tourid=>'T0005',
+    p_discountpercent=>8,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-06-09',
+    p_extracondition=>'จองก่อนวันออกเดินทาง >= 60 วัน (KR Seoul-Jeju)',
+    p_minbookamount=>55800   -- 2 pax × 27,900
   );
 
+  /* ============================================================
+     PRM0002 : Group 10+ Discount  (MinPax=10, Status=ACTIVE)
+     ผูกทุก Tour เพราะกลุ่มใหญ่ได้ส่วนลดทุก destination
+  ============================================================ */
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0002',
-    p_discountpercent => 10,
-    p_startdate       => DATE '2026-01-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Early bird JP2',
-    p_minbookamount   => 60000
+    p_promotionid=>'PRM0002', p_tourid=>'T0001',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'กลุ่ม >= 10 คน เดินทางพร้อมกัน | ผู้นำกลุ่มได้ Free 1 ที่',
+    p_minbookamount=>299000  -- 10 pax × 29,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0002', p_tourid=>'T0002',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'กลุ่ม >= 10 คน (JP Autumn) | Free 1 ที่สำหรับผู้นำกลุ่ม',
+    p_minbookamount=>315000  -- 10 pax × 31,500
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0002', p_tourid=>'T0003',
+    p_discountpercent=>3,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'กลุ่ม >= 10 คน (CNX) | ลด 3% ทุกที่นั่ง',
+    p_minbookamount=>59000   -- 10 pax × 5,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0002', p_tourid=>'T0004',
+    p_discountpercent=>4,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'กลุ่ม >= 10 คน (SG) | ลด 4%',
+    p_minbookamount=>199000  -- 10 pax × 19,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0002', p_tourid=>'T0005',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'กลุ่ม >= 10 คน (KR) | ลด 5%',
+    p_minbookamount=>279000  -- 10 pax × 27,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0002', p_tourid=>'T0006',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'กลุ่ม >= 10 คน (Incentive BKK) | ลด 5% ต่อหัว',
+    p_minbookamount=>150000  -- 10 pax × 15,000
   );
 
+  /* ============================================================
+     PRM0003 : New Year Flash Sale  (MinPax=1, DiscountValue=15, Status=ACTIVE)
+     ผูกทุก Tour — จองช่วงปลายปีเพื่อเดินทางปี 2026
+  ============================================================ */
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0003',
-    p_discountpercent => 8,
-    p_startdate       => DATE '2026-01-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Early bird CNX',
-    p_minbookamount   => 30000
+    p_promotionid=>'PRM0003', p_tourid=>'T0001',
+    p_discountpercent=>15,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'Flash Sale — จำนวนจำกัด 5 ที่นั่ง | ไม่สามารถใช้ร่วมกับโปรอื่น',
+    p_minbookamount=>29900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0003', p_tourid=>'T0002',
+    p_discountpercent=>15,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'Flash Sale — จำนวนจำกัด 5 ที่ (JP Autumn)',
+    p_minbookamount=>31500
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0003', p_tourid=>'T0003',
+    p_discountpercent=>10,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'Flash Sale CNX — จำนวนจำกัด 5 ที่',
+    p_minbookamount=>5900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0003', p_tourid=>'T0004',
+    p_discountpercent=>12,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'Flash Sale SG — จำนวนจำกัด 5 ที่',
+    p_minbookamount=>19900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0003', p_tourid=>'T0005',
+    p_discountpercent=>15,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'Flash Sale KR — จำนวนจำกัด 5 ที่',
+    p_minbookamount=>27900
   );
 
+  /* ============================================================
+     PRM0004 : Repeat Customer Voucher  (MinPax=1, DiscountValue=5)
+     ผูกทุก Tour — ลูกค้าเก่าที่เคยเดินทางมาแล้ว >= 1 ครั้ง
+  ============================================================ */
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0004',
-    p_discountpercent => 10,
-    p_startdate       => DATE '2026-01-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Early bird SG',
-    p_minbookamount   => 40000
+    p_promotionid=>'PRM0004', p_tourid=>'T0001',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'ลูกค้าเก่าที่เคยเดินทางกับบริษัทมาแล้ว >= 1 ครั้ง | ไม่รวมกับโปรอื่น',
+    p_minbookamount=>29900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0004', p_tourid=>'T0002',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'ลูกค้าเก่า (JP Autumn) | ไม่รวมกับโปรอื่น',
+    p_minbookamount=>31500
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0004', p_tourid=>'T0003',
+    p_discountpercent=>3,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'ลูกค้าเก่า (CNX) ลด 3%',
+    p_minbookamount=>5900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0004', p_tourid=>'T0004',
+    p_discountpercent=>4,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'ลูกค้าเก่า (SG) ลด 4%',
+    p_minbookamount=>19900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0004', p_tourid=>'T0005',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2024-01-01', p_enddate=>DATE '2026-12-31',
+    p_extracondition=>'ลูกค้าเก่า (KR) ลด 5%',
+    p_minbookamount=>27900
   );
 
+  /* ============================================================
+     PRM0005 : Low Season Special  (MinPax=2, DiscountValue=10)
+     ผูกกับ Tour ที่มี Low Season จริงๆ (SG, KR, CNX ช่วง May-Sep)
+     ไม่ผูก JP Sakura/Autumn (ช่วงนั้นเป็น High Season ญี่ปุ่น)
+  ============================================================ */
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0005',
-    p_discountpercent => 12,
-    p_startdate       => DATE '2026-01-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Early bird KR',
-    p_minbookamount   => 70000
+    p_promotionid=>'PRM0005', p_tourid=>'T0004',
+    p_discountpercent=>10,
+    p_startdate=>DATE '2026-05-01', p_enddate=>DATE '2026-09-30',
+    p_extracondition=>'Low Season SG (พ.ค.-ก.ย.) ลด 10% | วันออกเดินทางต้องอยู่ในช่วงโปรโมชัน',
+    p_minbookamount=>39800   -- 2 pax × 19,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0005', p_tourid=>'T0005',
+    p_discountpercent=>12,
+    p_startdate=>DATE '2026-05-01', p_enddate=>DATE '2026-09-30',
+    p_extracondition=>'Low Season KR (พ.ค.-ก.ย.) ลด 12% | วันออกเดินทางต้องอยู่ในช่วงโปรโมชัน',
+    p_minbookamount=>55800   -- 2 pax × 27,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0005', p_tourid=>'T0003',
+    p_discountpercent=>8,
+    p_startdate=>DATE '2026-05-01', p_enddate=>DATE '2026-09-30',
+    p_extracondition=>'Low Season CNX (ฤดูฝน) ลด 8%',
+    p_minbookamount=>11800   -- 2 pax × 5,900
+  );
+  pkg_promodetail.sp_promo_add_detail(
+    p_promotionid=>'PRM0005', p_tourid=>'T0006',
+    p_discountpercent=>8,
+    p_startdate=>DATE '2026-05-01', p_enddate=>DATE '2026-09-30',
+    p_extracondition=>'Low Season Incentive BKK ลด 8% | เฉพาะการจองใหม่เท่านั้น',
+    p_minbookamount=>30000   -- 2 pax × 15,000
   );
 
+  /* ============================================================
+     PRM0006 : Credit Card Bank X  (MinPax=1, DiscountValue=5)
+     ผูกทุก Tour — ต้องชำระด้วยบัตรเครดิต Bank X เท่านั้น
+  ============================================================ */
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0001',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Group >=10 pax',
-    p_minbookamount   => 100000
+    p_promotionid=>'PRM0006', p_tourid=>'T0001',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-03-01', p_enddate=>DATE '2026-08-31',
+    p_extracondition=>'ชำระเต็มจำนวนด้วยบัตรเครดิต Bank X เท่านั้น | รับ Cashback 5% ใน Statement ถัดไป',
+    p_minbookamount=>29900
   );
-
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0002',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Group10 JP2',
-    p_minbookamount   => 120000
+    p_promotionid=>'PRM0006', p_tourid=>'T0002',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-03-01', p_enddate=>DATE '2026-08-31',
+    p_extracondition=>'ชำระด้วยบัตร Bank X (JP Autumn) | Cashback 5%',
+    p_minbookamount=>31500
   );
-
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0003',
-    p_discountpercent => 3,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Group10 CNX',
-    p_minbookamount   => 40000
+    p_promotionid=>'PRM0006', p_tourid=>'T0003',
+    p_discountpercent=>3,
+    p_startdate=>DATE '2026-03-01', p_enddate=>DATE '2026-08-31',
+    p_extracondition=>'ชำระด้วยบัตร Bank X (CNX) | Cashback 3%',
+    p_minbookamount=>5900
   );
-
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0004',
-    p_discountpercent => 4,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Group10 SG',
-    p_minbookamount   => 60000
+    p_promotionid=>'PRM0006', p_tourid=>'T0004',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-03-01', p_enddate=>DATE '2026-08-31',
+    p_extracondition=>'ชำระด้วยบัตร Bank X (SG) | Cashback 5%',
+    p_minbookamount=>19900
   );
-
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0005',
-    p_discountpercent => 6,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Group10 KR',
-    p_minbookamount   => 90000
+    p_promotionid=>'PRM0006', p_tourid=>'T0005',
+    p_discountpercent=>5,
+    p_startdate=>DATE '2026-03-01', p_enddate=>DATE '2026-08-31',
+    p_extracondition=>'ชำระด้วยบัตร Bank X (KR) | Cashback 5%',
+    p_minbookamount=>27900
   );
-
   pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0003',
-    p_tourid          => 'T0001',
-    p_discountpercent => 25,
-    p_startdate       => DATE '2026-12-20',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Flash sale JP1',
-    p_minbookamount   => 30000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0003',
-    p_tourid          => 'T0002',
-    p_discountpercent => 25,
-    p_startdate       => DATE '2026-12-20',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Flash sale JP2',
-    p_minbookamount   => 35000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0003',
-    p_tourid          => 'T0003',
-    p_discountpercent => 20,
-    p_startdate       => DATE '2026-12-20',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Flash sale CNX',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0003',
-    p_tourid          => 'T0004',
-    p_discountpercent => 22,
-    p_startdate       => DATE '2026-12-20',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Flash sale SG',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0003',
-    p_tourid          => 'T0005',
-    p_discountpercent => 28,
-    p_startdate       => DATE '2026-12-20',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Flash sale KR',
-    p_minbookamount   => 40000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0001',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Repeat cust JP',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0002',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Repeat cust JP2',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0003',
-    p_discountpercent => 4,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Repeat cust CNX',
-    p_minbookamount   => 15000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0004',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Repeat cust SG',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0005',
-    p_discountpercent => 6,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Repeat cust KR',
-    p_minbookamount   => 30000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0001',
-    p_discountpercent => 15,
-    p_startdate       => DATE '2026-05-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Low season JP1',
-    p_minbookamount   => 30000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0002',
-    p_discountpercent => 15,
-    p_startdate       => DATE '2026-05-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Low season JP2',
-    p_minbookamount   => 35000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0003',
-    p_discountpercent => 10,
-    p_startdate       => DATE '2026-05-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Low season CNX',
-    p_minbookamount   => 15000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0004',
-    p_discountpercent => 12,
-    p_startdate       => DATE '2026-05-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Low season SG',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0005',
-    p_discountpercent => 18,
-    p_startdate       => DATE '2026-05-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Low season KR',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0001',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X card',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0002',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X JP2',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0003',
-    p_discountpercent => 4,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X CNX',
-    p_minbookamount   => 15000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0004',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X SG',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0005',
-    p_discountpercent => 6,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X KR',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0006',
-    p_discountpercent => 8,
-    p_startdate       => DATE '2026-01-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Early bird incentive',
-    p_minbookamount   => 50000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0006',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Group10 incentive',
-    p_minbookamount   => 70000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0003',
-    p_tourid          => 'T0006',
-    p_discountpercent => 20,
-    p_startdate       => DATE '2026-12-20',
-    p_enddate         => DATE '2026-12-31',
-    p_extracondition  => 'Flash sale incentive',
-    p_minbookamount   => 30000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0006',
-    p_discountpercent => 4,
-    p_startdate       => DATE '2026-02-01',
-    p_enddate         => DATE '2026-06-30',
-    p_extracondition  => 'Repeat cust incentive',
-    p_minbookamount   => 20000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0006',
-    p_discountpercent => 12,
-    p_startdate       => DATE '2026-05-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Low season incentive',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0006',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X incentive',
-    p_minbookamount   => 30000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0001',
-    p_discountpercent => 9,
-    p_startdate       => DATE '2026-09-01',
-    p_enddate         => DATE '2026-11-30',
-    p_extracondition  => 'Autumn early bird',
-    p_minbookamount   => 45000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0002',
-    p_discountpercent => 7,
-    p_startdate       => DATE '2026-09-01',
-    p_enddate         => DATE '2026-11-30',
-    p_extracondition  => 'Group10 autumn',
-    p_minbookamount   => 80000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0003',
-    p_discountpercent => 11,
-    p_startdate       => DATE '2026-06-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'CNX green season',
-    p_minbookamount   => 18000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0004',
-    p_discountpercent => 13,
-    p_startdate       => DATE '2026-06-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'SG low season card',
-    p_minbookamount   => 22000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0005',
-    p_tourid          => 'T0005',
-    p_discountpercent => 16,
-    p_startdate       => DATE '2026-06-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'KR low season',
-    p_minbookamount   => 26000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0002',
-    p_discountpercent => 11,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-04-30',
-    p_extracondition  => 'Sakura early bird',
-    p_minbookamount   => 55000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0001',
-    p_tourid          => 'T0001',
-    p_discountpercent => 12,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-04-30',
-    p_extracondition  => 'Sakura EB 2',
-    p_minbookamount   => 60000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0002',
-    p_tourid          => 'T0004',
-    p_discountpercent => 6,
-    p_startdate       => DATE '2026-04-01',
-    p_enddate         => DATE '2026-09-30',
-    p_extracondition  => 'Group10 SG FE',
-    p_minbookamount   => 50000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0001',
-    p_discountpercent => 7,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-05-31',
-    p_extracondition  => 'Repeat premium JP',
-    p_minbookamount   => 30000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0004',
-    p_tourid          => 'T0005',
-    p_discountpercent => 8,
-    p_startdate       => DATE '2026-03-01',
-    p_enddate         => DATE '2026-05-31',
-    p_extracondition  => 'Repeat premium KR',
-    p_minbookamount   => 35000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0001',
-    p_discountpercent => 6,
-    p_startdate       => DATE '2026-04-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X double points',
-    p_minbookamount   => 25000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0002',
-    p_discountpercent => 7,
-    p_startdate       => DATE '2026-04-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X JP2 double',
-    p_minbookamount   => 28000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0004',
-    p_discountpercent => 5,
-    p_startdate       => DATE '2026-04-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X SG cashback',
-    p_minbookamount   => 22000
-  );
-
-  pkg_promodetail.sp_promo_add_detail(
-    p_promotionid     => 'PRM0006',
-    p_tourid          => 'T0005',
-    p_discountpercent => 6,
-    p_startdate       => DATE '2026-04-01',
-    p_enddate         => DATE '2026-08-31',
-    p_extracondition  => 'Bank X KR cashback',
-    p_minbookamount   => 26000
+    p_promotionid=>'PRM0006', p_tourid=>'T0006',
+    p_discountpercent=>4,
+    p_startdate=>DATE '2026-03-01', p_enddate=>DATE '2026-08-31',
+    p_extracondition=>'ชำระด้วยบัตร Bank X (Incentive BKK) | Cashback 4% | เฉพาะการจอง B2C',
+    p_minbookamount=>15000
   );
 END;
 

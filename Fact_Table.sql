@@ -106,8 +106,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
     PROCEDURE sp_load_trip_performance IS
     BEGIN
         EXECUTE IMMEDIATE 'TRUNCATE TABLE FactTripPerformance';
-
+ 
         INSERT INTO FactTripPerformance (
+            DateKey, TourKey, GuideKey,
             DateKey, TourKey, GuideKey,
             TotalTrips, PaxPerTrip, TotalTripCost, TotalTripRev, TripProfit
         )
@@ -123,11 +124,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
         FROM STG_Tour t
         LEFT JOIN DimTour dt ON t.TourID = dt.TourID AND dt.IsCurrent = 'Y'
         LEFT JOIN (
-            SELECT TourID,
-                SUM(PaxAdult + PaxChild) AS SumPax,
-                SUM(SubTotalAmount)      AS SumAmount
-            FROM STG_BookingDetail
-            GROUP BY TourID
+            SELECT
+                bd.TourID,
+                SUM(bd.PaxAdult + bd.PaxChild)  AS SumPax,
+                SUM(bd.SubTotalAmount)           AS SumAmount
+            FROM STG_BookingDetail bd
+            JOIN STG_Booking b
+                ON b.BookingID = bd.BookingID
+               AND b.BookingStatus NOT IN ('CANCELLED')   -- ← กรองออก
+            GROUP BY bd.TourID
         ) Rev ON t.TourID = Rev.TourID
         LEFT JOIN (
             SELECT TourID,
@@ -141,6 +146,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
 
         COMMIT;
     END sp_load_trip_performance;
+ 
 
 
     -- Procedure: truncates and reloads FactBookingStatus from staging; flags each booking as cancelled (1) or active (0)
