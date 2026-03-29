@@ -1188,15 +1188,6 @@ create or replace package body pkg_guide as
             'Name is required.'
          );
       end if;
-      if
-         p_phone is not null
-         and p_phone < 0
-      then
-         raise_application_error(
-            -20703,
-            'Phone must be >= 0.'
-         );
-      end if;
 
       insert into guide (
          guideid,

@@ -35,7 +35,7 @@ INSERT INTO Employee (EmpNo, FName, LName, Position, StartDate, DeptCode, Status
 -- -------------------------------------------------------
 INSERT INTO TourPlan (TourPlanID, Name, Description)
   VALUES ('TPJP6D01', 'JP 6D Tokyo-Osaka Sakura',
-          'apan 6D5N Tokyo-Hakone-Osaka, Sakura Season Mar-Apr');
+          'Japan 6D5N Tokyo-Hakone-Osaka, Sakura Season Mar-Apr');
 INSERT INTO TourPlan (TourPlanID, Name, Description)
   VALUES ('TPJP6D02', 'JP 6D Tokyo-Osaka Autumn',
           'Japan 6D5N Tokyo-Nikko-Osaka, Autumn Leaves Oct-Nov');
@@ -167,7 +167,7 @@ INSERT INTO ItemCost (ItemCostID, CostTypeID, CountryID, Name, Email, RatePerUni
 INSERT INTO ItemCost (ItemCostID, CostTypeID, CountryID, Name, Email, RatePerUnit, Status)
   VALUES ('IC0024', 'CT003', 'CTY003', 'Korean Set Meal (per person)', 'ops@krfood.kr', 900, 'A');
 INSERT INTO ItemCost (ItemCostID, CostTypeID, CountryID, Name, Email, RatePerUnit, Status)
-  VALUES ('IC0025', 'CT004', 'CTY003', 'Songsan Ichulbong Entrance (per person', 'ticket@seongsan.kr', 800, 'A');
+  VALUES ('IC0025', 'CT004', 'CTY003', 'Songsan Ichulbong Entrance (per person)', 'ticket@seongsan.kr', 800, 'A');
 INSERT INTO ItemCost (ItemCostID, CostTypeID, CountryID, Name, Email, RatePerUnit, Status)
   VALUES ('IC0026', 'CT005', 'CTY003', 'Korea Local Guide (per day)', 'guide@visitkorea.kr', 5000, 'A');
 
@@ -176,21 +176,21 @@ INSERT INTO ItemCost (ItemCostID, CostTypeID, CountryID, Name, Email, RatePerUni
 -- เบอร์โทรแก้ให้ถูกต้องตาม country code และ format จริง
 -- Salary ต้องสอดคล้อง rate ที่คิดใน CostDetail
 -- -------------------------------------------------------
-INSERT INTO Guide (GuideID, Name, Email, Phone, LanguageSkills, Specialty, Status, Salary)
-  VALUES ('G0001', 'Tanaka Hiroshi', 'tanaka.guide@jp.com', '+81-90-1111-2222',
-          'JP,EN', 'Tokyo city tour, Temples, Culture', 'AVAILABLE', 15000);
-INSERT INTO Guide (GuideID, Name, Email, Phone, LanguageSkills, Specialty, Status, Salary)
-  VALUES ('G0002', 'Sato Yumi', 'yumi.sato@jp.com', '+81-90-2222-3333',
-          'JP,EN,TH', 'Shopping, Family group, Osaka area', 'AVAILABLE', 15000);
-INSERT INTO Guide (GuideID, Name, Email, Phone, LanguageSkills, Specialty, Status, Salary)
-  VALUES ('G0003', 'Somchai Phumjai', 'somchai.guide@th.com', '+66-81-234-5678',
-          'TH,EN', 'Northern Thailand, Nature, Temples', 'AVAILABLE', 3500);
-INSERT INTO Guide (GuideID, Name, Email, Phone, LanguageSkills, Specialty, Status, Salary)
-  VALUES ('G0004', 'Kim Minseo', 'minseo.kim@kr.com', '+82-10-7777-8888',
-          'KR,EN', 'Seoul city, K-pop, Jeju Island', 'BUSY', 5000);
-INSERT INTO Guide (GuideID, Name, Email, Phone, LanguageSkills, Specialty, Status, Salary)
-  VALUES ('G0005', 'Lim Wei', 'wei.lim@sg.com', '+65-9123-4567',
-          'EN,ZH,MS', 'Singapore highlights, Food tour, Sentosa', 'AVAILABLE', 4000);
+INSERT INTO Guide (GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status)
+  VALUES ('G0001', 'Tanaka Hiroshi', 'tanaka.guide@jp.com', 'JP,EN',
+          '+81-90-1111-2222', 'Tokyo city tour, Temples, Culture', 15000, 'AVAILABLE');
+INSERT INTO Guide (GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status)
+  VALUES ('G0002', 'Sato Yumi', 'yumi.sato@jp.com', 'JP,EN,TH',
+          '+81-90-2222-3333', 'Shopping, Family group, Osaka area', 15000, 'AVAILABLE');
+INSERT INTO Guide (GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status)
+  VALUES ('G0003', 'Somchai Phumjai', 'somchai.guide@th.com', 'TH,EN',
+          '+66-81-234-5678', 'Northern Thailand, Nature, Temples', 3500, 'AVAILABLE');
+INSERT INTO Guide (GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status)
+  VALUES ('G0004', 'Kim Minseo', 'minseo.kim@kr.com', 'KR,EN',
+          '+82-10-7777-8888', 'Seoul city, K-pop, Jeju Island', 5000, 'BUSY');
+INSERT INTO Guide (GuideID, Name, Email, LanguageSkills, Phone, Specialty, Salary, Status)
+  VALUES ('G0005', 'Lim Wei', 'wei.lim@sg.com', 'EN,ZH,MS',
+          '+65-9123-4567', 'Singapore highlights, Food tour, Sentosa', 4000, 'AVAILABLE');
 
 -- -------------------------------------------------------
 -- CustomerType
@@ -310,8 +310,8 @@ INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, En
           DATE '2026-05-01', DATE '2026-05-04', 'OPEN', 'CTY004');
 INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID)
   VALUES ('T0005', 'KR-INT-SJ-2606', 'TTINT01',
-          'Korea Seoul-Jeju 5D4N', 32,
-          DATE '2026-06-10', DATE '2026-06-14', 'OPEN', 'CTY003');
+          'Korea Seoul-Jeju 6D5N', 32,
+          DATE '2026-06-10', DATE '2026-06-15', 'OPEN', 'CTY003');
 INSERT INTO Tour (TourID, TourCode, TourTypeID, Name, CapacityPax, StartDate, EndDate, Status, CountryID)
   VALUES ('T0006', 'TH-INC-BKK-2607', 'TTINC01',
           'Bangkok Incentive Program 3D2N', 40,
@@ -339,54 +339,101 @@ INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, Boo
 INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
   VALUES ('BK0007', 'CUS00007', 'PRM0006', 'E0002', DATE '2026-03-10','CONFIRMED', 'PAID', 'CARD', 1, 1);
 INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
-  VALUES ('BK0008', 'CUS00006', 'PRM0005', 'E0003', DATE '2026-03-20', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
-INSERT INTO Booking VALUES ('BK0009','CUS00009','PRM0001','E0002',DATE '2026-01-05','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0010','CUS00010',NULL,'E0001',DATE '2026-02-10','CONFIRMED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0011','CUS00016','PRM0002','E0002',DATE '2026-01-15','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0012','CUS00027','PRM0006','E0001',DATE '2026-03-05','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0013','CUS00020',NULL,'E0003',DATE '2026-02-20','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0014','CUS00011','PRM0004','E0002',DATE '2026-02-01','CANCELLED','REFUNDED','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0015','CUS00029','PRM0001','E0001',DATE '2026-01-08','CONFIRMED','PAID','CASH',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0016','CUS00011','PRM0001','E0002',DATE '2026-01-20','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0017','CUS00017',NULL,'E0003',DATE '2026-02-15','CONFIRMED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0018','CUS00028','PRM0006','E0001',DATE '2026-03-01','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0019','CUS00022','PRM0002','E0003',DATE '2026-02-10','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0020','CUS00025','PRM0004','E0002',DATE '2026-01-28','CONFIRMED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0021','CUS00014','PRM0003','E0001',DATE '2026-02-25','CANCELLED','REFUNDED','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0022','CUS00030','PRM0001','E0002',DATE '2026-01-12','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0023','CUS00013',NULL,'E0002',DATE '2026-01-10','COMPLETED','PAID','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0024','CUS00015','PRM0003','E0003',DATE '2026-01-15','COMPLETED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0025','CUS00019','PRM0002','E0001',DATE '2026-01-20','COMPLETED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0026','CUS00026','PRM0004','E0002',DATE '2026-01-25','COMPLETED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0027','CUS00012','PRM0006','E0003',DATE '2026-02-01','COMPLETED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0028','CUS00018',NULL,'E0002',DATE '2026-02-20','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0029','CUS00013','PRM0005','E0001',DATE '2026-03-01','CONFIRMED','UNPAID','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0030','CUS00024','PRM0004','E0003',DATE '2026-03-10','CONFIRMED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0031','CUS00021','PRM0006','E0002',DATE '2026-02-28','CANCELLED','REFUNDED','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0032','CUS00016','PRM0001','E0002',DATE '2026-03-15','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0033','CUS00023','PRM0002','E0001',DATE '2026-03-20','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0034','CUS00010','PRM0003','E0003',DATE '2026-03-05','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0035','CUS00025','PRM0006','E0002',DATE '2026-03-18','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0036','CUS00029',NULL,'E0001',DATE '2026-04-01','CONFIRMED','PAID','CASH',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0037','CUS00009','PRM0005','E0003',DATE '2026-03-25','CANCELLED','REFUNDED','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0038','CUS00020','PRM0002','E0002',DATE '2026-03-12','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0039','CUS00022','PRM0002','E0003',DATE '2026-04-10','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0040','CUS00023','PRM0002','E0001',DATE '2026-04-15','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0041','CUS00027','PRM0006','E0002',DATE '2026-04-20','PENDING','UNPAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0042','CUS00030',NULL,'E0001',DATE '2026-04-25','PENDING','UNPAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0043','CUS00014','PRM0004','E0002',DATE '2026-02-05','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0044','CUS00017','PRM0001','E0001',DATE '2026-01-18','CONFIRMED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0045','CUS00024',NULL,'E0003',DATE '2026-02-12','CONFIRMED','PAID','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0046','CUS00026','PRM0006','E0002',DATE '2026-03-08','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0047','CUS00015','PRM0004','E0001',DATE '2026-02-20','CONFIRMED','PAID','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0048','CUS00026',NULL,'E0003',DATE '2026-03-15','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0049','CUS00020','PRM0003','E0002',DATE '2026-01-30','COMPLETED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0050','CUS00021',NULL,'E0001',DATE '2026-02-05','COMPLETED','PAID','CASH',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0051','CUS00019','PRM0005','E0003',DATE '2026-03-05','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0052','CUS00014','PRM0003','E0002',DATE '2026-03-18','CONFIRMED','PAID','E-WALLET',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0053','CUS00020','PRM0002','E0001',DATE '2026-04-28','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0054','CUS00021','PRM0002','E0003',DATE '2026-05-02','CONFIRMED','PARTIAL','TRANSFER',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
-INSERT INTO Booking VALUES ('BK0055','CUS00028',NULL,'E0002',DATE '2026-05-05','CONFIRMED','PAID','CARD',1,1,CURRENT_TIMESTAMP,USER,NULL,NULL);
+  VALUES ('BK0008', 'CUS00006', NULL, 'E0003', DATE '2026-03-20', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0009', 'CUS00009', 'PRM0001', 'E0002', DATE '2026-01-05', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0010', 'CUS00010', NULL,       'E0001', DATE '2026-02-10', 'CONFIRMED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0011', 'CUS00016', 'PRM0002',  'E0002', DATE '2026-01-15', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0012', 'CUS00027', 'PRM0006',  'E0001', DATE '2026-03-05', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0013', 'CUS00020', NULL,       'E0003', DATE '2026-02-20', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0014', 'CUS00011', 'PRM0004',  'E0002', DATE '2026-02-01', 'CANCELLED', 'REFUNDED','E-WALLET', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0015', 'CUS00029', 'PRM0001',  'E0001', DATE '2026-01-08', 'CONFIRMED', 'PAID',    'CASH',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0016', 'CUS00011', 'PRM0001',  'E0002', DATE '2026-01-20', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0017', 'CUS00017', NULL,       'E0003', DATE '2026-02-15', 'CONFIRMED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0018', 'CUS00028', 'PRM0006',  'E0001', DATE '2026-03-01', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0019', 'CUS00022', 'PRM0002',  'E0003', DATE '2026-02-10', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0020', 'CUS00025', 'PRM0004',  'E0002', DATE '2026-01-28', 'CONFIRMED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0021', 'CUS00014', 'PRM0003',  'E0001', DATE '2026-02-25', 'CANCELLED', 'REFUNDED','E-WALLET', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0022', 'CUS00030', 'PRM0001',  'E0002', DATE '2026-01-12', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0023', 'CUS00013', NULL,       'E0002', DATE '2026-01-10', 'COMPLETED', 'PAID',    'E-WALLET', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0024', 'CUS00015', 'PRM0003',  'E0003', DATE '2026-01-15', 'COMPLETED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0025', 'CUS00019', 'PRM0002',  'E0001', DATE '2026-01-20', 'COMPLETED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0026', 'CUS00026', 'PRM0004',  'E0002', DATE '2026-01-25', 'COMPLETED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0027', 'CUS00012', NULL,       'E0003', DATE '2026-02-01', 'COMPLETED', 'PAID',    'CARD',     1, 1); -- PRM0006 not yet active (starts 2026-03-01)
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0028', 'CUS00018', NULL,       'E0002', DATE '2026-02-20', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0029', 'CUS00013', NULL,       'E0001', DATE '2026-03-01', 'CONFIRMED', 'UNPAID',  'E-WALLET', 1, 1); -- PRM0005 not yet active (starts 2026-05-01)
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0030', 'CUS00024', 'PRM0004',  'E0003', DATE '2026-03-10', 'CONFIRMED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0031', 'CUS00021', NULL,       'E0002', DATE '2026-02-28', 'CANCELLED', 'REFUNDED','CARD',     1, 1); -- PRM0006 not yet active (starts 2026-03-01)
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0032', 'CUS00016', 'PRM0001',  'E0002', DATE '2026-03-15', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0033', 'CUS00023', 'PRM0002',  'E0001', DATE '2026-03-20', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0034', 'CUS00010', 'PRM0003',  'E0003', DATE '2026-03-05', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0035', 'CUS00025', 'PRM0006',  'E0002', DATE '2026-03-18', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0036', 'CUS00029', NULL,       'E0001', DATE '2026-04-01', 'CONFIRMED', 'PAID',    'CASH',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0037', 'CUS00009', NULL,       'E0003', DATE '2026-03-25', 'CANCELLED', 'REFUNDED','E-WALLET', 1, 1); -- PRM0005 not yet active (starts 2026-05-01)
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0038', 'CUS00020', 'PRM0002',  'E0002', DATE '2026-03-12', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0039', 'CUS00022', 'PRM0002',  'E0003', DATE '2026-04-10', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0040', 'CUS00023', 'PRM0002',  'E0001', DATE '2026-04-15', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0041', 'CUS00027', 'PRM0006',  'E0002', DATE '2026-04-20', 'PENDING',   'UNPAID',  'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0042', 'CUS00030', NULL,       'E0001', DATE '2026-04-25', 'PENDING',   'UNPAID',  'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0043', 'CUS00014', 'PRM0004',  'E0002', DATE '2026-02-05', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0044', 'CUS00017', 'PRM0001',  'E0001', DATE '2026-01-18', 'CONFIRMED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0045', 'CUS00024', NULL,       'E0003', DATE '2026-02-12', 'CONFIRMED', 'PAID',    'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0046', 'CUS00026', 'PRM0006',  'E0002', DATE '2026-03-08', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0047', 'CUS00015', 'PRM0004',  'E0001', DATE '2026-02-20', 'CONFIRMED', 'PAID',    'E-WALLET', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0048', 'CUS00026', NULL,       'E0003', DATE '2026-03-15', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0049', 'CUS00020', 'PRM0003',  'E0002', DATE '2026-01-30', 'COMPLETED', 'PAID',    'CARD',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0050', 'CUS00021', NULL,       'E0001', DATE '2026-02-05', 'COMPLETED', 'PAID',    'CASH',     1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0051', 'CUS00019', NULL,       'E0003', DATE '2026-03-05', 'CONFIRMED', 'PAID',    'CARD',     1, 1); -- PRM0005 not yet active (starts 2026-05-01)
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0052', 'CUS00014', 'PRM0003',  'E0002', DATE '2026-03-18', 'CONFIRMED', 'PAID',    'E-WALLET', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0053', 'CUS00020', 'PRM0002',  'E0001', DATE '2026-04-28', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0054', 'CUS00021', 'PRM0002',  'E0003', DATE '2026-05-02', 'CONFIRMED', 'PARTIAL', 'TRANSFER', 1, 1);
+INSERT INTO Booking (BookingID, CustomerID, PromotionID, EmpNo, BookingDate, BookingStatus, PaymentStatus, PaymentMethod, TotalPax, TotalAmount)
+  VALUES ('BK0055', 'CUS00028', NULL,       'E0002', DATE '2026-05-05', 'CONFIRMED', 'PAID',    'CARD',     1, 1);
 
 COMMIT;
 
