@@ -1,3 +1,12 @@
+-- Dimension: DimReadingType — static lookup for sensor reading categories
+CREATE TABLE DimReadingType (
+    ReadingTypeKey  NUMBER          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ReadingTypeID   VARCHAR2(8)     NOT NULL,
+    ReadingTypeName VARCHAR2(40)    NOT NULL,
+    Unit            VARCHAR2(20),   -- e.g. '°C', '%', 'people'
+    CONSTRAINT UQ_DimReadingType_ID UNIQUE (ReadingTypeID)
+);
+
 
 -- Dimension: DimDevice — SCD Type 2 for IoT device type and status changes
 CREATE TABLE DimDevice (
