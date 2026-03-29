@@ -1,43 +1,52 @@
--- Fact table: aggregates booking revenue, pax count, and gross profit per booking
+--รายงานยอดขายและจัดอันดับ ใช้ดูรายได้รวม, จัดอันดับทัวร์ขายดี, และจุดหมายปลายทาง
 CREATE TABLE FactRevenueAnalysis (
     FactID          NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    DateKey         NUMBER,
-    TourKey         NUMBER,
-    CustomerKey     NUMBER,
-    BookingCount    NUMBER,
-    TotalPax        NUMBER,
-    TotalRevenue    NUMBER(12,2),
-    GrossProfit     NUMBER(12,2),
+    DateKey         NUMBER,          -- วันที่จอง
+    TourKey         NUMBER,          -- แพ็กเกจทัวร์ (ใช้ดูชื่อทัวร์, เส้นทาง, ประเทศ)
+    CustomerKey     NUMBER,          -- ลูกค้า (ใช้ดูระดับลูกค้า, ประเทศต้นทาง)
+    
+    BookingCount    NUMBER,          -- จำนวน Booking
+    TotalPax        NUMBER,          -- จำนวนคน (Volume)
+    TotalRevenue    NUMBER(12,2),    -- รายได้รวม (Net Amount)
+    GrossProfit     NUMBER(12,2),    -- กำไรขั้นต้น (Revenue - Cost)
+    
     CONSTRAINT FK_Rev_Date FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
     CONSTRAINT FK_Rev_Tour FOREIGN KEY (TourKey) REFERENCES DimTour(TourKey),
     CONSTRAINT FK_Rev_Cust FOREIGN KEY (CustomerKey) REFERENCES DimCustomer(CustomerKey)
 );
 
--- Fact table: measures cost, revenue, and profit per tour trip with guide assignment
+--รายงานประสิทธิภาพต้นทุนและกำไรต่อทริป ใช้ดูว่าไกด์คนไหนทำกำไรดี, ทริปไหนต้นทุนบานปลาย
 CREATE TABLE FactTripPerformance (
     FactID          NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    DateKey         NUMBER,
-    TourKey         NUMBER,
-    GuideKey        NUMBER,
-    TotalTrips      NUMBER,
-    PaxPerTrip      NUMBER,
-    TotalTripCost   NUMBER(12,2),
-    TotalTripRev    NUMBER(12,2),
-    TripProfit      NUMBER(12,2),
-    CONSTRAINT FK_Trip_Date  FOREIGN KEY (DateKey)  REFERENCES DimDate(DateKey),
-    CONSTRAINT FK_Trip_Tour  FOREIGN KEY (TourKey)  REFERENCES DimTour(TourKey),
+    DateKey         NUMBER,          -- วันที่เดินทาง
+    TourKey         NUMBER,          -- ทัวร์ (Package)
+    GuideKey        NUMBER,          -- ไกด์ (Outsource/In-house)
+    SupplierKey     NUMBER,          -- Ground Operator (ต้องสร้าง DimSupplier เพิ่ม)
+    
+    TotalTrips      NUMBER,          -- จำนวนรอบทริป
+    PaxPerTrip      NUMBER,          -- จำนวนลูกทัวร์ในทริปนั้น
+    TotalTripCost   NUMBER(12,2),    -- ต้นทุนรวมของทริป
+    TotalTripRev    NUMBER(12,2),    -- รายได้รวมของทริป
+    TripProfit      NUMBER(12,2),    -- กำไรสุทธิ (Rev - Cost)
+    
+    CONSTRAINT FK_Trip_Date  FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
+    CONSTRAINT FK_Trip_Tour  FOREIGN KEY (TourKey) REFERENCES DimTour(TourKey),
     CONSTRAINT FK_Trip_Guide FOREIGN KEY (GuideKey) REFERENCES DimGuide(GuideKey)
+    -- CONSTRAINT FK_Trip_Supp FOREIGN KEY (SupplierKey) REFERENCES DimSupplier(SupplierKey)
 );
 
--- Fact table: tracks total bookings and cancellation count per booking record
+--รายงานสถานะการจอง ใช้ดูอัตราการยกเลิก (Cancel Rate) 
 CREATE TABLE FactBookingStatus (
     FactID          NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     DateKey         NUMBER,
     TourKey         NUMBER,
-    BookingMetaKey  NUMBER,
+    BookingMetaKey  NUMBER,          -- เชื่อม DimBooking เพื่อดู Status (Cancel/Confirm)
     GuideKey        NUMBER,
-    TotalBookings   NUMBER,
-    CancelCount     NUMBER,
+    
+    -- Metrics for Report 4
+    TotalBookings   NUMBER,          -- จำนวนการจองทั้งหมด
+    CancelCount     NUMBER,          -- จำนวนที่ยกเลิก (1 ถ้า Cancel, 0 ถ้าไม่)
+    
     CONSTRAINT FK_Stat_Date FOREIGN KEY (DateKey) REFERENCES DimDate(DateKey),
     CONSTRAINT FK_Stat_Tour FOREIGN KEY (TourKey) REFERENCES DimTour(TourKey),
     CONSTRAINT FK_Stat_Meta FOREIGN KEY (BookingMetaKey) REFERENCES DimBooking(BookingKey),
@@ -45,11 +54,17 @@ CREATE TABLE FactBookingStatus (
 );
 
 
--- Package spec: declares ETL load procedures for all three fact tables
 CREATE OR REPLACE PACKAGE PKG_LOAD_FACT_REPORTS AS
+    -- 1. Load สำหรับรายงาน Revenue (FactRevenueAnalysis)
     PROCEDURE sp_load_revenue_analysis;
+
+    -- 2. Load สำหรับรายงาน Performance (FactTripPerformance)
     PROCEDURE sp_load_trip_performance;
+
+    -- 3. Load สำหรับรายงาน Status (FactBookingStatus)
     PROCEDURE sp_load_booking_status;
+
+    -- สั่งรันทั้งหมด
     PROCEDURE sp_run_all;
 END PKG_LOAD_FACT_REPORTS;
 
@@ -57,160 +72,179 @@ END PKG_LOAD_FACT_REPORTS;
 
 CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
 
-    -- Procedure: merges FactRevenueAnalysis from staging; inserts new grain rows and updates measures on existing ones — no rows are ever deleted (Non-volatile)
+    -- ==========================================================
+    -- 1. Load FactRevenueAnalysis
+    -- ==========================================================
     PROCEDURE sp_load_revenue_analysis IS
     BEGIN
-        MERGE INTO FactRevenueAnalysis t
-        USING (
-            SELECT
-                COALESCE(dd.DateKey, -1)                                        AS DateKey,
-                COALESCE(dt.TourKey, -1)                                        AS TourKey,
-                COALESCE(dc.CustomerKey, -1)                                    AS CustomerKey,
-                COUNT(*)                                                        AS BookingCount,
-                SUM(b.TotalPax)                                                 AS TotalPax,
-                SUM(b.TotalAmount)                                              AS TotalRevenue,
-                SUM(b.TotalAmount - (
-                    NVL(tc.TotalTourCost, 0) / NULLIF(tp.TotalTourPax, 0) * b.TotalPax
-                ))                                                              AS GrossProfit
-            FROM STG_Booking b
-            LEFT JOIN (
-                SELECT BookingID, MIN(TourID) AS TourID
-                FROM STG_BookingDetail GROUP BY BookingID
-            ) bd ON b.BookingID = bd.BookingID
-            LEFT JOIN (
-                SELECT TourID, SUM(FeeAmount * Quantity) AS TotalTourCost
-                FROM STG_CostDetail
-                GROUP BY TourID
-            ) tc ON bd.TourID = tc.TourID
-            LEFT JOIN (
-                SELECT TourID, SUM(PaxAdult + PaxChild) AS TotalTourPax
-                FROM STG_BookingDetail
-                GROUP BY TourID
-            ) tp ON bd.TourID = tp.TourID
-            LEFT JOIN DimTour dt
-                ON bd.TourID = dt.TourID AND dt.IsCurrent = 'Y'
-            LEFT JOIN DimCustomer dc
-                ON b.CustomerID = dc.CustomerID AND dc.IsCurrent = 'Y'
-            LEFT JOIN DimDate dd
-                ON dd.FullDate = b.BookingDate
-            GROUP BY COALESCE(dd.DateKey, -1), COALESCE(dt.TourKey, -1), COALESCE(dc.CustomerKey, -1)
-        ) s
-        ON (t.DateKey = s.DateKey AND t.TourKey = s.TourKey AND t.CustomerKey = s.CustomerKey)
-        WHEN MATCHED THEN UPDATE SET
-            t.BookingCount  = s.BookingCount,
-            t.TotalPax      = s.TotalPax,
-            t.TotalRevenue  = s.TotalRevenue,
-            t.GrossProfit   = s.GrossProfit
-        WHEN NOT MATCHED THEN INSERT (
-            DateKey, TourKey, CustomerKey,
-            BookingCount, TotalPax, TotalRevenue, GrossProfit
-        ) VALUES (
-            s.DateKey, s.TourKey, s.CustomerKey,
-            s.BookingCount, s.TotalPax, s.TotalRevenue, s.GrossProfit
-        );
+        -- ล้างข้อมูลเก่า
+        EXECUTE IMMEDIATE 'TRUNCATE TABLE FactRevenueAnalysis';
 
+        INSERT INTO FactRevenueAnalysis (
+            DateKey, TourKey, CustomerKey,PromotionKey,
+            BookingCount, TotalPax, TotalRevenue, GrossProfit
+        )
+        SELECT 
+            -- แปลงวันที่จองเป็น DateKey (YYYYMMDD)
+            dd.DateKey,
+            
+            -- Lookup TourKey (ถ้าหาไม่เจอใส่ -1)
+            dt.TourKey,
+            
+            -- Lookup CustomerKey
+            dc.CustomerKey,
+            dp.PromotionKey,
+            -- Metrics
+            1 AS BookingCount,                           -- 1 แถว คือ 1 Booking
+            b.TotalPax AS TotalPax,                      -- จำนวนคนใน Booking นั้น
+            b.TotalAmount AS TotalRevenue,               -- รายได้สุทธิ
+            
+            -- คำนวณกำไรเบื้องต้น (Revenue - Cost โดยประมาณ)
+            -- หมายเหตุ: ในทางปฏิบัติควรรวม Cost จริง แต่ในที่นี้ใช้ (Revenue * 0.2) เป็นตัวอย่าง Margin 20%
+            (b.TotalAmount * 0.2) AS GrossProfit
+            
+        FROM STG_Booking b
+        -- Join เพื่อหา TourID ของ Booking นั้น
+        LEFT JOIN (
+            SELECT BookingID, MIN(TourID) AS TourID  -- เอา TourID หลักแค่ 1 ตัว
+            FROM STG_BookingDetail GROUP BY BookingID
+        ) bd ON b.BookingID = bd.BookingID
+        -- Lookup Dimensions
+        LEFT JOIN DimTour dt 
+            ON bd.TourID = dt.TourID AND dt.IsCurrent = 'Y'
+        LEFT JOIN DimCustomer dc
+            ON b.CustomerID = dc.CustomerID AND dc.IsCurrent = 'Y'
+        LEFT JOIN DimDate dd
+            ON dd.FullDate = b.BookingDate
+        LEFT JOIN DimPromotion dp
+            ON b.PromotionID = dp.PromotionID AND dp.IsCurrent = 'Y';
+
+        COMMIT;
     END sp_load_revenue_analysis;
 
 
-    -- Procedure: merges FactTripPerformance from staging; inserts new grain rows and updates measures on existing ones — no rows are ever deleted (Non-volatile)
+    -- ==========================================================
+    -- 2. Load FactTripPerformance
+    -- เน้นดูต้นทุนและกำไรต่อทริป (Grain: 1 Tour)
+    -- Revenue  = SubTotalAmount จาก booking จริง (ไม่นับ CANCELLED)
+    -- Cost     = FeeAmount × Quantity จาก CostDetail
+    -- Profit   = Revenue - Cost
+    -- ==========================================================
     PROCEDURE sp_load_trip_performance IS
     BEGIN
-        MERGE INTO FactTripPerformance t
-        USING (
-            SELECT
-                COALESCE(dd.DateKey, -1)                                    AS DateKey,
-                COALESCE(dt.TourKey, -1)                                    AS TourKey,
-                COALESCE(dg.GuideKey, -1)                                   AS GuideKey,
-                COUNT(*)                                                    AS TotalTrips,
-                SUM(NVL(Rev.SumPax, 0))                                    AS PaxPerTrip,
-                SUM(NVL(Cost.SumCost, 0))                                  AS TotalTripCost,
-                SUM(NVL(Rev.SumAmount, 0))                                 AS TotalTripRev,
-                SUM(NVL(Rev.SumAmount, 0) - NVL(Cost.SumCost, 0))         AS TripProfit
-            FROM STG_Tour t
-            LEFT JOIN DimTour dt ON t.TourID = dt.TourID AND dt.IsCurrent = 'Y'
-            LEFT JOIN (
-                SELECT
-                    bd.TourID,
-                    SUM(bd.PaxAdult + bd.PaxChild)  AS SumPax,
-                    SUM(bd.SubTotalAmount)           AS SumAmount
-                FROM STG_BookingDetail bd
-                JOIN STG_Booking b
-                    ON b.BookingID = bd.BookingID
-                   AND b.BookingStatus NOT IN ('CANCELLED')
-                GROUP BY bd.TourID
-            ) Rev ON t.TourID = Rev.TourID
-            LEFT JOIN (
-                SELECT TourID,
-                       MAX(GuideID)              AS MainGuideID,
-                       SUM(FeeAmount * Quantity)  AS SumCost
-                FROM STG_CostDetail
-                GROUP BY TourID
-            ) Cost ON t.TourID = Cost.TourID
-            LEFT JOIN DimGuide dg ON Cost.MainGuideID = dg.GuideID AND dg.IsCurrent = 'Y'
-            LEFT JOIN DimDate  dd ON dd.FullDate = t.StartDate
-            GROUP BY COALESCE(dd.DateKey, -1), COALESCE(dt.TourKey, -1), COALESCE(dg.GuideKey, -1)
-        ) s
-        ON (t.DateKey = s.DateKey AND t.TourKey = s.TourKey AND t.GuideKey = s.GuideKey)
-        WHEN MATCHED THEN UPDATE SET
-            t.TotalTrips    = s.TotalTrips,
-            t.PaxPerTrip    = s.PaxPerTrip,
-            t.TotalTripCost = s.TotalTripCost,
-            t.TotalTripRev  = s.TotalTripRev,
-            t.TripProfit    = s.TripProfit
-        WHEN NOT MATCHED THEN INSERT (
+        EXECUTE IMMEDIATE 'TRUNCATE TABLE FactTripPerformance';
+ 
+        INSERT INTO FactTripPerformance (
             DateKey, TourKey, GuideKey,
             TotalTrips, PaxPerTrip, TotalTripCost, TotalTripRev, TripProfit
-        ) VALUES (
-            s.DateKey, s.TourKey, s.GuideKey,
-            s.TotalTrips, s.PaxPerTrip, s.TotalTripCost, s.TotalTripRev, s.TripProfit
-        );
+        )
+        SELECT
+            dd.DateKey,
+            dt.TourKey,
+            dg.GuideKey,
+            1                                               AS TotalTrips,
+            NVL(Rev.SumPax,    0)                           AS PaxPerTrip,
+            NVL(Cost.SumCost,  0)                           AS TotalTripCost,
+            NVL(Rev.SumAmount, 0)                           AS TotalTripRev,
+            NVL(Rev.SumAmount, 0) - NVL(Cost.SumCost, 0)   AS TripProfit
+ 
+        FROM STG_Tour t
+ 
+        LEFT JOIN DimTour dt
+            ON t.TourID = dt.TourID AND dt.IsCurrent = 'Y'
+ 
+        -- Revenue: รวมเฉพาะ booking ที่ไม่ใช่ CANCELLED
+        LEFT JOIN (
+            SELECT
+                bd.TourID,
+                SUM(bd.PaxAdult + bd.PaxChild)  AS SumPax,
+                SUM(bd.SubTotalAmount)           AS SumAmount
+            FROM STG_BookingDetail bd
+            JOIN STG_Booking b
+                ON b.BookingID = bd.BookingID
+               AND b.BookingStatus NOT IN ('CANCELLED')   -- ← กรองออก
+            GROUP BY bd.TourID
+        ) Rev ON t.TourID = Rev.TourID
+ 
+        -- Subquery 1: หา MainGuide (เอาจาก CostDetail ที่ GuideID NOT NULL เท่านั้น)
+        LEFT JOIN (
+            SELECT TourID, MAX(GuideID) AS MainGuideID
+            FROM STG_CostDetail
+            WHERE GuideID IS NOT NULL 
+            GROUP BY TourID
+        ) Guide ON t.TourID = Guide.TourID
+ 
+        -- Subquery 2: รวม cost ทั้งหมดของ tour (ทั้ง guide และ non-guide items)
+        LEFT JOIN (
+            SELECT TourID, SUM(FeeAmount * Quantity) AS SumCost
+            FROM STG_CostDetail             -- ← ไม่ filter GuideID เพราะ cost ทั้งหมดคือต้นทุนจริง
+            GROUP BY TourID
+        ) Cost ON t.TourID = Cost.TourID
 
+        LEFT JOIN DimGuide dg
+            ON Guide.MainGuideID = dg.GuideID AND dg.IsCurrent = 'Y'
+        LEFT JOIN DimDate dd
+            ON dd.FullDate = t.StartDate;
+ 
+        COMMIT;
     END sp_load_trip_performance;
  
 
 
-    -- Procedure: merges FactBookingStatus from staging; inserts new grain rows and updates measures on existing ones — no rows are ever deleted (Non-volatile)
+    -- ==========================================================
+    -- 3. Load FactBookingStatus
+    -- เน้นดู Status การจอง และ Cancel Rate
+    -- ==========================================================
     PROCEDURE sp_load_booking_status IS
     BEGIN
-        MERGE INTO FactBookingStatus t
-        USING (
-            SELECT
-                COALESCE(dd.DateKey, -1)                                            AS DateKey,
-                COALESCE(dt.TourKey, -1)                                            AS TourKey,
-                COALESCE(db.BookingKey, -1)                                         AS BookingMetaKey,
-                COALESCE(dg.GuideKey, -1)                                           AS GuideKey,
-                COUNT(*)                                                            AS TotalBookings,
-                SUM(CASE WHEN b.BookingStatus = 'CANCELLED' THEN 1 ELSE 0 END)     AS CancelCount
-            FROM STG_Booking b
-            LEFT JOIN (
-                SELECT BookingID, MIN(TourID) AS TourID
-                FROM STG_BookingDetail
-                GROUP BY BookingID
-            ) bd ON b.BookingID = bd.BookingID
-            LEFT JOIN DimBooking db ON b.BookingID = db.BookingID AND db.IsCurrent = 'Y'
-            LEFT JOIN DimTour dt ON bd.TourID = dt.TourID AND dt.IsCurrent = 'Y'
-            LEFT JOIN (
-                SELECT TourID, MAX(GuideID) AS GuideID FROM STG_CostDetail GROUP BY TourID
-            ) cd ON bd.TourID = cd.TourID
-            LEFT JOIN DimGuide dg ON cd.GuideID = dg.GuideID AND dg.IsCurrent = 'Y'
-            LEFT JOIN DimDate dd ON dd.FullDate = b.BookingDate
-            GROUP BY COALESCE(dd.DateKey, -1), COALESCE(dt.TourKey, -1), COALESCE(db.BookingKey, -1), COALESCE(dg.GuideKey, -1)
-        ) s
-        ON (t.DateKey = s.DateKey AND t.TourKey = s.TourKey AND t.BookingMetaKey = s.BookingMetaKey AND t.GuideKey = s.GuideKey)
-        WHEN MATCHED THEN UPDATE SET
-            t.TotalBookings = s.TotalBookings,
-            t.CancelCount   = s.CancelCount
-        WHEN NOT MATCHED THEN INSERT (
+        EXECUTE IMMEDIATE 'TRUNCATE TABLE FactBookingStatus';
+
+        INSERT INTO FactBookingStatus (
             DateKey, TourKey, BookingMetaKey, GuideKey,
             TotalBookings, CancelCount
-        ) VALUES (
-            s.DateKey, s.TourKey, s.BookingMetaKey, s.GuideKey,
-            s.TotalBookings, s.CancelCount
-        );
+        )
+        SELECT 
+            dd.DateKey,
+            dt.TourKey,
+            db.BookingKey,
+            
+            -- GuideKey (อาจจะไม่มีในระดับ Booking ต้องวิ่งไปหาผ่าน Tour)
+            dg.GuideKey,
 
+            -- Metrics
+            1 AS TotalBookings,
+            
+            -- Logic การนับ Cancel (ถ้า Status = Cancel ให้เป็น 1)
+            CASE WHEN b.BookingStatus = 'CANCELLED' THEN 1 ELSE 0 END AS CancelCount
+
+        FROM STG_Booking b
+        -- Join หา Tour
+        LEFT JOIN (
+            SELECT BookingID, MIN(TourID) AS TourID  -- ← MIN เพื่อเอาแค่ 1 TourID ต่อ Booking
+            FROM STG_BookingDetail
+            GROUP BY BookingID
+        ) bd ON b.BookingID = bd.BookingID
+        -- Join หา BookingMeta (Status Dimension)
+        LEFT JOIN DimBooking db ON b.BookingID = db.BookingID AND db.IsCurrent = 'Y'
+        -- Join หา Tour Dimension
+        LEFT JOIN DimTour dt ON bd.TourID = dt.TourID AND dt.IsCurrent = 'Y'
+        
+        -- Join หา Guide (เอาเฉพาะแถวที่มี GuideID จริง ไม่รวม NULL)
+        LEFT JOIN (
+            SELECT TourID, MAX(GuideID) AS GuideID
+            FROM STG_CostDetail
+            WHERE GuideID IS NOT NULL
+            GROUP BY TourID
+        ) cd ON bd.TourID = cd.TourID
+        LEFT JOIN DimGuide dg ON cd.GuideID = dg.GuideID AND dg.IsCurrent = 'Y'
+        LEFT JOIN DimDate dd ON dd.FullDate = b.BookingDate;
+        
+        COMMIT;
     END sp_load_booking_status;
 
-    -- Procedure: runs all three fact table load procedures in sequence
+    -- ==========================================================
+    -- Master Runner
+    -- ==========================================================
     PROCEDURE sp_run_all IS
     BEGIN
         sp_load_revenue_analysis;
@@ -221,7 +255,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LOAD_FACT_REPORTS AS
 END PKG_LOAD_FACT_REPORTS;
 
 
--- Execute: runs the full ETL load for all fact tables
 BEGIN
     PKG_LOAD_FACT_REPORTS.sp_run_all;
 END;
