@@ -1,14 +1,3 @@
--- ============================================================
--- DeleteData.sql
--- Deletes all data from every table in the correct order
--- to respect FK constraints (children before parents).
--- Layers: Fact → Staging → Dimension → OLTP
--- ============================================================
-
--- ============================================================
--- 1. FACT TABLES (reference Dim tables)
--- ============================================================
-
 -- IoT Fact tables
 DELETE FROM FactIoTReading;
 DELETE FROM FactTouristMovement;
@@ -18,9 +7,7 @@ DELETE FROM FactRevenueAnalysis;
 DELETE FROM FactTripPerformance;
 DELETE FROM FactBookingStatus;
 
--- ============================================================
--- 2. STAGING TABLES (no FK constraints — safe in any order)
--- ============================================================
+
 
 -- IoT Staging (MongoDB-sourced transaction tables)
 DELETE FROM STG_IoTAlert;
@@ -54,11 +41,6 @@ DELETE FROM STG_TourPlan;
 DELETE FROM STG_Region;
 DELETE FROM STG_Department;
 
--- ============================================================
--- 3. DIMENSION TABLES
---    DimLocation → DimCountry (FK_DimLoc_Country), so delete
---    DimLocation before DimCountry
--- ============================================================
 
 DELETE FROM DimLocation;       -- FK → DimCountry
 DELETE FROM DimReadingType;
@@ -72,13 +54,6 @@ DELETE FROM DimItemCost;
 DELETE FROM DimCountry;        -- referenced by DimLocation (cleared above)
 DELETE FROM DimDate;           -- referenced by all Fact tables (cleared above)
 
--- ============================================================
--- 4. OLTP TABLES
---    Order: detail/child tables → transactional parents
---           → lookup/master tables
---    Tables with ON DELETE CASCADE are noted but children are
---    deleted explicitly first for clarity.
--- ============================================================
 
 -- 4a. Detail / child tables (deepest children first)
 DELETE FROM BookingDetail;     -- FK → Booking (CASCADE), Tour
